@@ -3,7 +3,7 @@
 > **Construis un avion bricolé, pilote-le de ville en ville à travers l'Europe… puis réussis à le poser.**
 > Jeu d'arcade 2D cartoon en HTML5, destiné à la plateforme [Poki](https://poki.com).
 
-**État actuel : 🟡 Phase 1 — Conception terminée, en attente de validation.** Aucun code n'a encore été écrit.
+**État actuel : ✅ Conception validée (13/11/2026) — prochaine étape : jalon « Sensation de vol » (Phase 2).** Aucun code n'a encore été écrit.
 👉 Commencez par lire le **[Dossier de conception](docs/DESIGN_DOSSIER.md)**, puis **[PROJECT_STATUS.md](PROJECT_STATUS.md)**.
 
 ## Le jeu en 30 secondes
@@ -23,7 +23,7 @@ BUILD → FLY → LAND OR CRASH → REWARD → UNLOCK → DISCOVER → BUILD AGA
 |---|---|
 | [`PROJECT_STATUS.md`](PROJECT_STATUS.md) | Ce qui est fait, en cours, bloqué, à venir |
 | [`ROADMAP.md`](ROADMAP.md) | Les 5 phases et leurs jalons |
-| [`DECISIONS.md`](DECISIONS.md) | Historique des décisions (validées et en attente) |
+| [`DECISIONS.md`](DECISIONS.md) | Historique des décisions validées |
 | [`CHANGELOG.md`](CHANGELOG.md) | Historique des évolutions |
 | [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md) | **Synthèse de la conception** — à lire en premier |
 | [`docs/PROJECT_WORKFLOW.md`](docs/PROJECT_WORKFLOW.md) | Branches, labels, milestones, définition de « terminé » |

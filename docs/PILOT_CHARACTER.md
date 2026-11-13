@@ -117,7 +117,10 @@ Principes :
 - Cockpit : en vol, seuls les calques 3 à 15 au-dessus du bord du cockpit sont visibles ; le bord du cockpit (appartenant au fuselage) se dessine entre 3 et le reste.
 - Détails techniques (container Phaser, teintes) : à préciser dans `TECHNICAL_ARCHITECTURE.md`.
 
-## 8. Décisions à valider
+## 8. Décisions
+
+> **Validées le 13/11/2026** (D8) : nom « Pip », genre non marqué par défaut. Animation cut-out par tweens : décision technique retenue.
+
 1. Nom du pilote (« Pip » recommandé).
 2. Pilote au genre non marqué par défaut.
 3. Animation cut-out par tweens (pas de Spine).

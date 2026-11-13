@@ -10,27 +10,27 @@ Statuts : ✅ validée · 🟡 proposée, en attente · ❌ rejetée. Les décis
 | O1 | 13/11/2026 | Organisation Git : `main` + `feature/*` / `fix/*` / `release/*`, pas de `develop`, Conventional Commits, labels domaine/priorité/type/phase. | Chef de projet (décision organisationnelle) |
 | O2 | 13/11/2026 | Documentation en français, dans `docs/` ; fichiers de pilotage à la racine. | Chef de projet |
 
-## Décisions proposées — en attente de validation
+## Décisions de conception validées le 13/11/2026 (fin de Phase 1)
 
-Détail et argumentation : [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md) §17.
+Argumentation : [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md). Décisions prises par le porteur du projet, question par question.
 
-| # | Décision proposée | Recommandation |
+| # | Décision | Statut |
 |---|---|---|
-| D1 | Construction à emplacements (slots) | Oui |
-| D2 | Premier vol sans construction (avion « Le Coucou ») | Oui |
-| D3 | Tangage + gaz manuels (gaz auto au début), paysage uniquement | Oui |
-| D4 | Pas d'upgrades de stats | Oui |
-| D5 | Étape validée = arrêt dans la zone d'arrivée hors eau ; qualité = étoiles + Boulons | Oui |
-| D6 | 8 étapes : Paris → Reims → Bruxelles → Amsterdam → Londres → Berlin → Rome → Athènes → Istanbul | Oui |
-| D7 | Flotteurs / amerrissage après le MVP | Oui |
-| D8 | Direction artistique A « Atelier du Dimanche », pilote « Pip » | Oui |
-| D9 | Budget graphismes / musique freelance | À décider |
-| D10 | Monnaie « Boulons » ; interstitiel au clic « Revoler » ; rewarded ×2 gains et essai de pièce | Oui |
-| D11 | Durée MVP 1 h 30 – 2 h 30 sans pub | Oui |
-| D12 | Cible 8–16 ans + famille, mobile prioritaire, FR + EN | Oui |
-| D13 | « CAN YOU FLY? » = nom de code, nom final en Phase 4 | Oui |
-| D14 | Jalon « Sensation de vol » avant le prototype complet | Oui |
-| D15 | Candidater à Poki for Developers dès le prototype, accepter l'exclusivité web | Oui |
+| D1 | Construction à emplacements (slots) : fuselage + 10 emplacements, aile principale en 3 positions | ✅ |
+| D2 | Premier vol sans construction (avion « Le Coucou »), hangar ouvert après le 1er atterrissage | ✅ |
+| D3 | Tangage + gaz manuels (gaz auto pendant le tutoriel), paysage uniquement sur mobile | ✅ |
+| D4 | Pas d'upgrades de stats : progression = nouvelles pièces différentes, villes, cosmétiques | ✅ |
+| D5 | Étape validée = arrêt dans la zone d'arrivée hors eau, même en crash ; qualité = étoiles (1–3) + Boulons | ✅ (sans préférence exprimée → recommandation retenue, révisable après playtests) |
+| D6 | 8 étapes : Paris → Reims (tuto) → Bruxelles → Amsterdam → Londres → Berlin → Rome → Athènes → Istanbul | ✅ |
+| D7 | Flotteurs reportés après le MVP ; seules quelques zones de secours balisées sur l'eau | ✅ |
+| D8 | Direction artistique « Atelier du Dimanche » ; pilote « Pip », genre non marqué | ✅ |
+| D9 | **Zéro budget pour l'instant** (packs libres, production maison, IA pour le concept art). Investissement freelance seulement si le jeu reçoit de bons retours | ✅ (modifiée par rapport aux options proposées) |
+| D10 | Monnaie unique « Boulons » ; interstitiel au clic « Revoler » (jamais en vol, pas au 1er vol) ; 2 rewarded facultatives : ×2 gains, essai de pièce | ✅ |
+| D11 | Durée cible du MVP : 1 h 30 – 2 h 30 sans pub | ✅ |
+| D12 | Cible 8–16 ans + famille, mobile prioritaire, FR + EN au lancement | ✅ |
+| D13 | « CAN YOU FLY? » = nom de code ; nom final choisi en Phase 4 | ✅ |
+| D14 | Jalon « Sensation de vol » avant le prototype complet | ✅ |
+| D15 | Candidature Poki for Developers dès le prototype jouable ; exclusivité web Poki acceptée | ✅ |
 
 ## Décisions techniques prises par le chef de projet (révisables)
 

@@ -147,13 +147,18 @@ Option d'accessibilité : **réduire les secousses d'écran** (réglages).
 | **Freelance illustrateur 2D jeu** | Cohérent, identité forte | Estimation grossière : 1 500–4 000 € pour pilote + ~45 pièces + 3 biomes + UI | **Recommandé pour le MVP** si budget disponible. |
 | **Production maison en vectoriel simple** | Dépend du temps disponible | Temps | Possible car la Piste A repose sur des formes simples ; c'est aussi notre plan B. |
 
-**Recommandation** : prototype en placeholders (formes géométriques + Kenney) pour valider le *fun* sans investir ; style board de la Piste A (concept art IA + retouche) pour validation ; puis décision budget freelance avant le MVP.
+> **Décision D9 (13/11/2026)** : **zéro budget pour l'instant.** Prototype et MVP en packs libres (Kenney…), formes maison et IA pour le concept art, dans le style Piste A. Un investissement freelance sera envisagé uniquement si le jeu reçoit de bons retours (après le go / no-go ou la publication). **Décision D8 : Piste A « Atelier du Dimanche » validée.**
+
+**Recommandation initiale** : prototype en placeholders (formes géométriques + Kenney) pour valider le *fun* sans investir ; style board de la Piste A (concept art IA + retouche) pour validation ; puis décision budget freelance avant le MVP.
 
 ### 9.3 Ce qui est cher et doit être limité
 - Variantes d'endommagement : 1 seule variante « abîmée » par pièce (le « cassé » = la pièce se détache).
 - Monuments : 1 par ville, réutilisés en carte postale.
 - Pilote : modulaire (voir `CUSTOMIZATION_SYSTEM.md`) pour multiplier les combinaisons sans multiplier les dessins.
 
-## 10. Décisions à valider
+## 10. Décisions
+
+> 1 → **Piste A validée** (D8). 2 → **zéro budget pour l'instant** (D9).
+
 1. Piste A « Atelier du Dimanche » vs Piste B « Jouet Pop ».
 2. Stratégie de production : placeholders au prototype, freelance (budget ?) ou maison pour le MVP.

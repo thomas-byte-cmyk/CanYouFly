@@ -1,6 +1,6 @@
 # Dossier de conception — CAN YOU FLY? (Phase 1)
 
-> **Statut : EN ATTENTE DE VALIDATION** par le porteur du projet. Aucun code n'a été écrit.
+> **Statut : ✅ CONCEPTION VALIDÉE le 13/11/2026** (décisions D1–D15, voir `DECISIONS.md`). Aucun code n'a été écrit.
 > Ce document est la **synthèse** du chef de projet. Le détail de chaque domaine est dans les documents référencés.
 > Date : 13/11/2026.
 
@@ -240,7 +240,7 @@ hangar à slots (12 catégories, ~24 pièces placeholders) · stats et équilibr
 | R1 | **La physique est juste mais pas amusante** | Moyenne | Critique | Jalon « Sensation de vol » d'abord ; tuning par fichiers ; tests sur téléphone réel |
 | R2 | Contrôles tactiles imprécis (≈ la moitié du trafic) | Moyenne | Fort | Manche relatif, aides, tests mobiles dès le 1er build |
 | R3 | Atterrissage perçu comme injuste | Moyenne | Fort | Règles d'équité, ligne de trajectoire, phrases qui expliquent la cause |
-| R4 | **Production graphique** (avions, pilote, 8 décors) | Haute | Fort | Placeholders au prototype ; budget freelance (décision D9) ; style A peu coûteux en détails |
+| R4 | **Production graphique** (avions, pilote, 8 décors) **sans budget** (D9) | Haute | Fort | Style A à formes simples, packs libres (Kenney), pilote modulaire en calques, IA pour le concept art ; investissement seulement si bons retours |
 | R5 | Équilibrage des pièces (36–45 pièces × 8 étapes) | Haute | Moyen | Données en JSON, contrôle automatique des trade-offs, télémétrie locale de test |
 | R6 | **Accès à Poki for Developers** (bêta fermée, non garanti) | Moyenne | Critique pour la publication | Candidater tôt (dès le prototype jouable) ; plan B : autres portails (CrazyGames…) |
 | R7 | Concurrence dans la catégorie « avions » sur Poki | Moyenne | Moyen | Miser sur l'atterrissage + les crashs drôles dans la miniature |
@@ -270,7 +270,9 @@ Unités : **jours-homme de développement assisté par IA**, hors production gra
 
 ---
 
-## 17. Décisions qui nécessitent votre accord
+## 17. Décisions (validées le 13/11/2026)
+
+> Toutes les recommandations ont été retenues, sauf **D9 : zéro budget pour l'instant** (packs libres + IA ; investissement seulement si de bons retours). D5 : pas de préférence exprimée → recommandation retenue, révisable après playtests.
 
 | # | Décision | Ma recommandation |
 |---|---|---|

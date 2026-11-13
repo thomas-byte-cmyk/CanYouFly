@@ -86,6 +86,8 @@ Tenir un **registre des sources et licences** dès le premier son intégré.
 
 ---
 
+> **Décision D9 (13/11/2026)** : zéro budget pour l'instant → SFX et musique **libres de droits** (CC0 / CC-BY avec attribution listée dans `assets/LICENSES.md`). Compositeur freelance seulement si le jeu rencontre son public.
+
 ## 7. Budget poids & formats
 
 - Format : **OGG (Vorbis/Opus) + M4A/AAC** en repli (compatibilité Safari/iOS à vérifier selon les versions ciblées) ; Phaser charge la première source compatible.

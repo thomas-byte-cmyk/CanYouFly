@@ -271,16 +271,19 @@ Ville de départ · destination · distance parcourue (et % de l'étape) · dur�
 |---------|-----------|-----|-----------|
 | Hangar à slots, tap + drag, indicateurs CG/masse | ✅ | ✅ | |
 | Catalogue | 12 catégories, ~24–36 pièces | ~45 pièces | Pièces saisonnières |
-| Étapes | 1 étape tutoriel + 1 vraie étape | 7 étapes | Nouvelles régions |
+| Étapes | 1 étape tutoriel + 1 vraie étape | 8 étapes (Paris → Istanbul) | Nouvelles régions |
 | Événements | Vent, ascendant, anneaux, oiseaux | Tous §6 | Météo du jour, nuit |
 | Zones d'atterrissage | Piste + champ + eau | + toits, plages, plateaux | Porte-avions, bouées |
 | Résultats complets + phrases | ✅ (version simple) | ✅ animé | Partage d'image |
 | Spéciaux / expérimentaux | Fusée, ressorts, airbag | Tous | |
-| Flotteurs / amerrissage balisé | ❌ | À valider | |
+| Flotteurs / amerrissage balisé | ❌ | ❌ (zones de secours balisées seulement) | ✅ (décision D7) |
 | Presets d'avion sauvegardés | ❌ | ✅ | |
 | Mode défi quotidien | ❌ | ❌ | ✅ |
 
-## 9. Décisions à valider
+## 9. Décisions
+
+> **Validées le 13/11/2026** (voir `DECISIONS.md`) : 1 → D1 ✅, 2 → D2 ✅, 3 → retenu (règles d'équité), 4 → D7 : flotteurs après le MVP, 5 → D6 : itinéraire en 8 étapes ✅.
+
 1. Construction à slots (et non libre) avec aile principale positionnable.
 2. Premier vol sans construction (avion par défaut).
 3. Événements déterministes par étape.

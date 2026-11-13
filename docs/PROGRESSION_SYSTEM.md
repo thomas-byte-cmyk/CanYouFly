@@ -34,15 +34,17 @@ Chaque étape a une **valeur de référence `R`** (configurable) qui grossit dou
 
 | Étape | Trajet | R (Boulons) |
 |---|---|---|
-| 1 | Paris → Londres | 100 |
-| 2 | Londres → Amsterdam | 120 |
-| 3 | Amsterdam → Berlin | 140 |
-| 4 | Berlin → Rome | 170 |
-| 5 | Rome → Athènes | 200 |
-| 6 | Athènes → Istanbul | 230 |
-| (7) | Vol libre / rejouer | R de l'étape rejouée |
+| 0 | Paris → Reims (tutoriel) | 60 |
+| 1 | Reims → Bruxelles | 90 |
+| 2 | Bruxelles → Amsterdam | 110 |
+| 3 | Amsterdam → Londres | 130 |
+| 4 | Londres → Berlin | 150 |
+| 5 | Berlin → Rome | 175 |
+| 6 | Rome → Athènes | 200 |
+| 7 | Athènes → Istanbul | 230 |
+| — | Rejouer une étape | R de l'étape rejouée |
 
-> Note : 7 villes = **6 étapes**. Le brief parle de « 7 destinations » ; il faut clarifier si Paris est uniquement un point de départ (recommandé) ou si une étape tutoriel « Paris → Paris (aérodrome) » existe.
+> Itinéraire validé le 13/11/2026 (décision D6) : 9 villes, **8 étapes**, première traversée de mer à l'étape 3.
 
 ### 3.1 Formule
 
@@ -67,15 +69,15 @@ Plancher      = 10 Boulons si progression ≥ 5 % (évite un « 0 » humiliant s
 
 **WATER CRASH** et **CRASH LANDING** conservent intégralement la part *Distance* et les anneaux. L'échec coûte le bonus d'atterrissage, jamais le vol déjà accompli. Pas de pénalité supplémentaire pour l'eau : la sanction est déjà la fin du vol.
 
-### 3.2 Exemples (étape 1, R = 100)
+### 3.2 Exemples (calcul illustratif avec R = 100, proche des étapes 2–3)
 
 | Scénario | Distance | Atterr. | Anneaux | 1ʳᵉ arrivée | **Total** |
 |---|---|---|---|---|---|
 | Décollage raté, crash à 8 % | 5 | 0 | 0 | — | **10** (plancher) |
 | WATER CRASH à 50 % (Manche), 2 anneaux | 30 | 0 | 6 | — | **36** |
 | ROUGH dans un champ à 70 % | 42 | 3 | 9 | — | **54** |
-| CRASH à 95 %, juste avant Londres | 57 | 0 | 12 | — | **69** |
-| GOOD dans un parc de Londres | 60 | 17 | 12 | 100 | **189** |
+| CRASH à 95 %, juste avant la destination | 57 | 0 | 12 | — | **69** |
+| GOOD dans un parc de la ville d'arrivée | 60 | 17 | 12 | 100 | **189** |
 | PERFECT sur la piste, 6 anneaux | 60 | 40 | 18 | 100 | **218** |
 | Rejeu : PERFECT sur la piste | 60 | 40 | 18 | — | **118** |
 
@@ -119,9 +121,9 @@ Chaque nouvelle pièce doit **gagner sur un axe et perdre sur un autre** par rap
 | Ailes de planeur | Ailes | portance ++, plané | traînée +, fragiles | 400 |
 | Ailes delta | Ailes | vitesse +, solides | portance –, atterrissage difficile | 400 |
 | Train à ressorts | Train | encaisse les chocs ++ | traînée +, rebonds comiques | 300 |
-| Flotteurs | Train | **amerrissage autorisé** (zones d'eau marquées) | traînée ++, masse + | 500 |
+| Flotteurs *(post-MVP, décision D7)* | Train | **amerrissage autorisé** (zones d'eau marquées) | traînée ++, masse + | 500 |
 
-> Point de vigilance design : les **flotteurs** sont la seule pièce qui pourrait transformer l'eau en zone de secours. C'est cohérent avec le brief (« zones de secours exceptionnelles clairement identifiées ») à condition que ce soit une **pièce choisie**, avec un gros coût aérodynamique. À arbitrer avec le chef de projet.
+> Point de vigilance design : les **flotteurs** sont la seule pièce qui pourrait transformer l'eau en zone de secours. C'est cohérent avec le brief (« zones de secours exceptionnelles clairement identifiées ») à condition que ce soit une **pièce choisie**, avec un gros coût aérodynamique. **Arbitré le 13/11/2026 (D7) : flotteurs reportés après le MVP.**
 
 ### 4.3 Prix indicatifs
 
@@ -158,8 +160,8 @@ un upgrade « Moteur niv. 2 = +10 % poussée sans contrepartie » est exactement
 
 ### 7.1 Défis d'étape (3 par étape, façon « 3 étoiles »)
 
-Visibles sur la carte avant le départ. Exemple étape 1 :
-- Atteindre Londres.
+Visibles sur la carte avant le départ. Exemple étape 1 (Reims → Bruxelles) :
+- Atteindre Bruxelles.
 - Traverser 5 anneaux.
 - Réussir un PERFECT LANDING sur la piste.
 
@@ -179,7 +181,7 @@ Récompense : +0,2 × R par défi (une seule fois) ; les 3 défis d'une étape �
 | 8 | **Poids lourd** — atteindre une ville avec un avion de masse ≥ X | X | 1,3X | 1,6X | Pièce exp. |
 | 9 | **Plume** — atteindre une ville avec masse ≤ Y | — | — | — | Cosmétique |
 | 10 | **Chasseur d'anneaux** — anneaux cumulés | 25 | 100 | 300 | Traînée de fumée colorée |
-| 11 | **Sans une égratignure** — étape sans aucune collision | 1 | 3 | 6 étapes différentes | Combinaison |
+| 11 | **Sans une égratignure** — étape sans aucune collision | 1 | 3 | 6 étapes différentes (sur 8) | Combinaison |
 | 12 | **Ingénieur** — pièces différentes utilisées en vol | 15 | 30 | toutes | Pièce exp. |
 | 13 | **Collectionneur** — cosmétiques possédés | 10 | 25 | 50 | Cosmétique rare |
 | 14 | **Haute altitude** — altitude max | seuil 1 | 2 | 3 | Bonnet |
@@ -203,8 +205,8 @@ Affichés sur l'écran de résultats (« Nouveau record ! ») et dans un carnet 
 | Source | Part du catalogue | Exemples |
 |---|---|---|
 | Kit de départ | ~6 | casque cuir, lunettes, 3 couleurs |
-| Arrivée dans chaque ville | 1 par ville (6) | Londres : chapeau melon ; Amsterdam : bonnet rayé ; Rome : lunettes rétro… (éviter les clichés lourds — à valider DA) |
-| Défis d'étape (3/3) | 1 par étape (6) | |
+| Arrivée dans chaque ville | 1 par ville (8) | Londres : chapeau melon ; Amsterdam : bonnet rayé ; Rome : lunettes rétro… (éviter les clichés lourds — à valider DA) |
+| Défis d'étape (3/3) | 1 par étape (8) | |
 | Badges | ~15 | voir tableau |
 | **Boutique (Boulons)** | ~20 | puits de monnaie pour la fin de partie |
 
@@ -219,29 +221,35 @@ Total MVP visé : **~50 cosmétiques** (dimension à confirmer selon le coût de
 |---|---|---|
 | 1er décollage | < 30 s après le chargement | Pas de tutoriel bloquant |
 | 1ʳᵉ pièce achetée | 3–5 min | Le joueur comprend la boucle |
-| Londres atteint | 5–12 min (3–6 vols) | 1ᵉʳ « wow » |
-| Berlin | ~35–50 min | |
+| Reims atteint (tutoriel) | 1–3 min | 1ʳᵉ récompense |
+| Bruxelles atteint | 5–12 min (3–6 vols) | 1ᵉʳ « wow » |
+| Londres (1ʳᵉ mer) | ~30–45 min | |
+| Berlin | ~45–65 min | |
 | Istanbul (fin MVP) | **1 h 30 – 2 h 30** | |
 | 100 % (badges or, cosmétiques) | 5–8 h | Joueurs engagés |
 
 Justification :
 - Les sessions sur portail web sont courtes (hypothèse : ~10–20 min, à confirmer avec les données Poki). Il faut donc **une récompense marquante par session** (une ville ou une pièce importante), d'où une étape ≈ 10–20 min de tentatives.
 - Moins d'1 h 30 : contenu trop vite consommé, peu de rétention multi-jours.
-- Plus de 3 h : risque de grind sur 6 étapes seulement.
+- Plus de 3 h : risque de grind sur 8 étapes seulement.
 
 ### 9.1 Tableau des déblocages par étape (budget Boulons)
 
 | Étape | Vols moyens pour réussir | Boulons gagnés (cumul ≈) | Nouveautés à l'arrivée |
 |---|---|---|---|
 | Départ Paris | — | 0 | Kit de base (~10 pièces), 6 cosmétiques |
-| 1 → Londres | 4 | ~450 | Catalogue Londres (3 pièces : hélice tripale, train à ressorts, réservoir +), chapeau |
-| 2 → Amsterdam | 5 | ~1 100 | Catalogue (ailes de planeur, hélice larges, stabilisateur souple) — **premiers vents** |
-| 3 → Berlin | 5 | ~1 900 | Catalogue (moteur lourd, ailes delta, aérofreins) |
-| 4 → Rome | 6 | ~3 000 | Catalogue (Alpes : moteur haute altitude, train tout-terrain) |
-| 5 → Athènes | 6 | ~4 300 | Catalogue (flotteurs, ailerons longs) — **îles et mer** |
-| 6 → Istanbul | 7 | ~5 900 | Fin MVP : pièce expérimentale « fusée d'appoint », cosmétique « Pilote du Bosphore » |
+| 0 → Reims (tuto) | 1–2 | ~100 | Ouverture du hangar, 1ʳᵉ pièce offerte |
+| 1 → Bruxelles | 4 | ~450 | Catalogue Bruxelles (hélice tripale, train à ressorts) — **gaz manuels** |
+| 2 → Amsterdam | 5 | ~1 000 | Catalogue (ailes de planeur, stabilisateur souple) — **rafales, canaux** |
+| 3 → Londres | 5 | ~1 700 | Catalogue (réservoir +, hélice large) — **1ʳᵉ traversée de mer** |
+| 4 → Berlin | 5 | ~2 500 | Catalogue (moteur lourd, ailes delta, aérofreins) — **ascendants** |
+| 5 → Rome | 6 | ~3 500 | Catalogue (Alpes : moteur haute altitude, train tout-terrain) |
+| 6 → Athènes | 6 | ~4 700 | Catalogue (ailerons longs, train de plage) — **îles et littoral** |
+| 7 → Istanbul | 7 | ~6 200 | Fin MVP : pièce expérimentale « fusée d'appoint », cosmétique « Pilote du Bosphore » |
 
-Coût total du catalogue de pièces (~18 pièces achetables × ~350) ≈ **6 300 Boulons** → le joueur a acheté ~80–90 % du catalogue en arrivant à Istanbul, sans grind. Le reste + cosmétiques = contenu post-MVP.
+> Flotteurs : **reportés après le MVP** (décision D7). Les prix et quantités sont des valeurs initiales à équilibrer.
+
+Coût total du catalogue de pièces (~18 pièces achetables × ~350) ≈ **6 300 Boulons** → le joueur a acheté ~85–95 % du catalogue en arrivant à Istanbul, sans grind. Le reste + cosmétiques = contenu post-MVP.
 
 ---
 

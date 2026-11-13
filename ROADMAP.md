@@ -2,7 +2,7 @@
 
 Estimations en jours-homme de développement assisté par IA, hors graphismes définitifs. Détail : [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md) §16.
 
-## M1 — Conception validée *(en cours de validation)*
+## M1 — Conception validée ✅ *(13/11/2026)*
 - Dossier de conception, documents de domaine, organisation GitHub.
 - ✅ Livrable : validation écrite des décisions D1–D15.
 
@@ -24,7 +24,7 @@ Estimations en jours-homme de développement assisté par IA, hors graphismes d�
 - Économie Boulons, catalogues par ville, ~40 pièces, 3 défis/étape, 18 badges, ~50 cosmétiques.
 - Événements de vol complets, sauvegarde robuste, FR + EN.
 - SDK Poki (cycle de vie, interstitiels, 2 rewarded), après relecture des règles officielles.
-- Graphismes définitifs (illustrateur) — selon décision D9.
+- Graphismes : packs libres + production maison dans le style « Atelier du Dimanche » (D9 : zéro budget pour l'instant).
 
 ## M4 — Polish *(≈ 10–15 j)*
 - Animations, VFX, sound design et musique, équilibrage par playtests, performance mobile, temps de chargement, nom final.

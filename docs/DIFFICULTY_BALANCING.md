@@ -18,12 +18,16 @@
 
 | Étape | Trajet | Durée de vol visée | Nouveauté introduite | Terrain d'arrivée | Part d'eau | Vent | Taux de réussite visé* |
 |---|---|---|---|---|---|---|---|
-| 1 | Paris → Londres | 60–80 s | Bases : décollage, tangage, atterrissage. **La Manche** = 1ʳᵉ eau (courte, survolable avec le kit de base) | Grande piste + champs | ~20 % | Aucun | 1ᵉʳ essai 35 %, ≤ 4 essais 80 % |
-| 2 | Londres → Amsterdam | 70–90 s | **Vent constant** (de face/de dos, annoncé sur la carte) + **anneaux** | Campagne plate, champs, canaux (eau !) | ~30 % | Faible, constant | ≤ 5 essais 75 % |
-| 3 | Amsterdam → Berlin | 80–100 s | **Ville** à l'arrivée : obstacles (bâtiments, lampadaires), zones étroites | Piste urbaine courte + parcs | ~5 % | Rafales légères (annoncées par manche à air/feuilles) | ≤ 5 essais 70 % |
-| 4 | Berlin → Rome | 100–130 s | **Montagnes** (Alpes) : relief, courants ascendants/descendants visibles | Plateaux, pistes inclinées | ~10 % | Ascendances | ≤ 6 essais 65 % |
-| 5 | Rome → Athènes | 110–140 s | **Mer et îles** : choix entre îles (atterrissages sur plages, petites pistes) — la mer Ionienne impose un avion endurant ou un plan | Petite piste côtière, plages | ~50 % | Vent latéral | ≤ 6 essais 60 % |
-| 6 | Athènes → Istanbul | 120–150 s | **Synthèse** : îles + relief + ville dense, turbulences | Grand aéroport + toits/parcs d'Istanbul, Bosphore | ~35 % | Turbulences + rafales | ≤ 7 essais 55 % |
+| 0 | Paris → Reims (tuto) | 40–60 s | Bases : décollage, tangage, atterrissage ; gaz automatiques. Une rivière évitable | Grande piste + grand champ | ~5 % | Aucun | 1ᵉʳ essai 60 %, ≤ 2 essais 90 % |
+| 1 | Reims → Bruxelles | 60–80 s | **Gaz manuels**, vent de face, arrivée en ville + parc | Piste + parc + champ | ~5 % | Faible, constant | ≤ 4 essais 80 % |
+| 2 | Bruxelles → Amsterdam | 70–90 s | **Rafales** (annoncées) + **anneaux** ; canaux étroits | Campagne plate, champs, canaux (eau !) | ~25 % | Rafales légères | ≤ 5 essais 75 % |
+| 3 | Amsterdam → Londres | 80–100 s | **1ʳᵉ traversée de mer** (Mer du Nord) : gestion du carburant et du plané | Champs du Kent, piste, parc londonien | ~45 % | Vent latéral léger | ≤ 5 essais 70 % |
+| 4 | Londres → Berlin | 100–120 s | Étape longue : **réservoir**, **ascendants**, ville dense à l'arrivée | Piste urbaine courte + parcs | ~10 % | Ascendances | ≤ 6 essais 65 % |
+| 5 | Berlin → Rome | 110–130 s | **Montagnes** (Alpes) : relief, courants ascendants/descendants visibles | Plateaux, pistes inclinées | ~5 % | Ascendances / descendances | ≤ 6 essais 62 % |
+| 6 | Rome → Athènes | 120–140 s | **Mer et îles** : atterrissages sur plages, petites pistes ; avion endurant ou plan d'escale | Petite piste côtière, plages | ~50 % | Vent latéral | ≤ 6 essais 60 % |
+| 7 | Athènes → Istanbul | 130–150 s | **Synthèse** : îles + relief + ville dense, turbulences, toits | Grand aéroport + toits/parcs d'Istanbul, Bosphore | ~35 % | Turbulences + rafales | ≤ 7 essais 55 % |
+
+> Itinéraire validé le 13/11/2026 (décision D6). Valeurs initiales, à ajuster en playtest.
 
 \* « ≤ N essais X % » = X % des joueurs ayant tenté l'étape l'ont réussie en N tentatives ou moins. Ces cibles servent de **critères de validation** en playtest.
 
@@ -65,7 +69,7 @@ Modificateurs :
 
 ### 3.2 Carburant
 
-- Le carburant fixe la **distance motorisée** ; le plané fait le reste. Valeur initiale : avec le kit de base, le carburant couvre ~70 % de l'étape 1 ; le plané et le bon pilotage couvrent le reste. Étapes suivantes : demander de mieux gérer la puissance ou d'investir dans un réservoir (avec sa masse).
+- Le carburant fixe la **distance motorisée** ; le plané fait le reste. Valeur initiale : avec le kit de base, le carburant couvre ~70 % de l'étape 1 (l'étape 0 tutoriel se boucle sans panne sèche) ; le plané et le bon pilotage couvrent le reste. Étapes suivantes : demander de mieux gérer la puissance ou d'investir dans un réservoir (avec sa masse).
 - Indicateur de **projection de portée** (« au rythme actuel, tu peux atteindre ~X ») : fortement recommandé, c'est l'outil qui transforme la difficulté en **décision**.
 
 ### 3.3 Vent et événements
@@ -73,7 +77,7 @@ Modificateurs :
 - Vent constant : ±10–25 % de la vitesse de croisière de base. Toujours **annoncé** sur la carte avant le départ et visible en vol (particules, nuages).
 - Rafales : durée 1–3 s, **précédées** d'un signal visuel 1 s avant (feuilles, manche à air, lignes de vent).
 - Courants ascendants : zones visibles (oiseaux qui tournent, chaleur au-dessus des champs, nuages).
-- Densité d'événements : 0 (étape 1) → ~1 événement toutes les 10–15 s (étape 6). Jamais deux nouveaux types simultanés.
+- Densité d'événements : 0 (étape 1) → ~1 événement toutes les 10–15 s (étape 7). Jamais deux nouveaux types simultanés.
 
 ---
 
@@ -121,7 +125,7 @@ Principes :
 | Indicateur | Alerte si |
 |---|---|
 | Temps avant 1ᵉʳ décollage | > 45 s |
-| Réussite étape 1 en ≤ 4 essais | < 70 % |
+| Réussite étape 1 en ≤ 4 essais (et étape 0 en ≤ 2) | < 70 % |
 | Part des échecs « incompris » (verbatims) | > 20 % |
 | Abandon sur une étape | > 30 % des joueurs y restent bloqués > 10 essais |
 | Part des WATER CRASH sur une étape | > 60 % (l'eau est trop punitive / mal annoncée) |
@@ -133,4 +137,4 @@ Principes :
 
 - **Agent 1** : unités, modèle de contact (vitesse verticale/angle mesurés comment), faisabilité de la ligne de projection et de l'aide au pilotage, mode debug.
 - **Agent 2** : signalétique visuelle des dangers (vents, rafales, ascendances, eau), lisibilité des zones d'atterrissage, messages d'explication des échecs (ton humoristique + info utile).
-- **Agent 3** : les 30 premières secondes (taux de conversion Poki) dépendent de l'étape 1 : la garder très accessible.
+- **Agent 3** : les 30 premières secondes (taux de conversion Poki) dépendent de l'étape 0 (tutoriel) et de l'étape 1 : les garder très accessibles.
