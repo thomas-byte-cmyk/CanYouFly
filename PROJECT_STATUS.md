@@ -17,7 +17,7 @@ _Dernière mise à jour : 13/11/2026_
 - 15 documents de conception produits par les 4 agents (voir README)
 - Structure du dépôt, modèles d'issues/PR, workflow Git → [`docs/PROJECT_WORKFLOW.md`](docs/PROJECT_WORKFLOW.md)
 - Roadmap, registre des décisions, changelog
-- Issues de suivi des phases 1 et 2
+- 18 issues de suivi (phases 1, 2 et epic MVP), labels créés → [issues](../../issues)
 
 ## 🔄 En cours
 - Rien — en attente de la validation du porteur du projet.
@@ -25,10 +25,10 @@ _Dernière mise à jour : 13/11/2026_
 ## ⛔ Bloqué / nécessite une intervention humaine
 | Blocage | Pourquoi | Action requise |
 |---|---|---|
-| **Validation du concept** | Règle du projet : aucun code avant validation | Répondre aux décisions D1–D15 du dossier (issue « Validation de la conception ») |
+| **Validation du concept** | Règle du projet : aucun code avant validation | Répondre aux décisions D1–D15 du dossier (issue #1) |
 | **Milestones et GitHub Project non créés** | Les outils GitHub de l'IA ne permettent pas de créer des milestones ni des Projects | Option : les créer à la main (5 min, voir ci-dessous) ; sinon les labels `phase:*` les remplacent |
-| **Pages officielles Poki non lues en entier** | Le réseau de l'environnement de l'IA bloque `poki.com` | Relecture humaine des 3 pages de référence avant la Phase 3 (issue dédiée) |
-| **Accès Poki for Developers** | Plateforme en bêta fermée | Candidater quand le prototype sera jouable |
+| **Pages officielles Poki non lues en entier** | Le réseau de l'environnement de l'IA bloque `poki.com` | Relecture humaine des 3 pages de référence avant la Phase 3 (issue #3) |
+| **Accès Poki for Developers** | Plateforme en bêta fermée | Candidater quand le prototype sera jouable (issue #17) |
 | **Branche `main` pas encore créée** | Le travail de conception est sur la branche de session | Sera fusionné dans `main` après validation |
 
 ### Créer les milestones à la main (optionnel)
