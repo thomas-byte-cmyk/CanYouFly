@@ -7,7 +7,7 @@ import { FlightSession } from '../src/sim/session';
 function attempt(touchX: number, flareAlt: number, targetSink: number) {
   const s = new FlightSession({
     def: CONTENT.aircraft.coucou, level: CONTENT.levels['paris-reims'], tuning: CONTENT.tuning,
-    surfaces: CONTENT.surfaces, thresholds: CONTENT.landing, stabilize: true, autoThrottle: true, firstArrival: true,
+    surfaces: CONTENT.surfaces, thresholds: CONTENT.landing, stabilize: true, autoThrottle: true, firstArrival: true, arcade: process.env.SIM ? false : true,
   });
   const st = s.state;
   st.x = touchX - 500; st.y = 45 + 1.6; st.vx = 40; st.vy = 0; st.onGround = false;

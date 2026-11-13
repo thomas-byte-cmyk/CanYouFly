@@ -62,6 +62,12 @@ export interface Tuning {
   pitchRampTime: number;
   /** Effet de sol : coussin d'air près du sol qui adoucit la fin de descente. */
   groundEffect: { height: number; liftBoost: number; cushion: number };
+  /**
+   * Pilotage arcade : la commande règle directement la vitesse de rotation du nez (°/s),
+   * avec une réponse rapide ; la trajectoire « accroche » le nez (grip). La stabilité de la
+   * construction reste perceptible via `natural` (tendance naturelle, en fraction de commande).
+   */
+  arcade: { pitchRateDeg: number; response: number; natural: number; grip: number };
   assist: { extraDamping: number; alphaHoldGain: number };
   ground: { pitchMin: number; pitchMax: number };
 }
@@ -130,6 +136,8 @@ export interface AircraftRuntime {
   stabilize: boolean;
   /** Traînée parasite supplémentaire (volets sortis). */
   extraDrag: number;
+  /** Pilotage arcade (par défaut en jeu) plutôt que simulation des moments. */
+  arcade: boolean;
 }
 
 export interface StepInfo {

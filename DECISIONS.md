@@ -43,4 +43,5 @@ Argumentation : [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md). Décisions p
 | T5 | `gameplayStart` au hangar et en vol, `gameplayStop` sur résultats/menus/pause | Hangar = jeu actif |
 | T6 | Phaser **3.90** (dernière version 3) plutôt que Phaser 4 | Fidèle à T1, plugin Poki prévu pour Phaser 3 ; migration possible plus tard |
 | T7 | **Volets automatiques** à l'entrée de l'approche (vitesse ~28 u/s au lieu de 42) | Sans eux, l'avion arrivait trop vite pour se poser (vérifié par simulation). Aide arcade, révisable après vos tests |
+| T9 | **Pilotage arcade** par défaut (rotation du nez commandée directement, trajectoire qui suit le nez) ; le modèle « simulation » reste disponible dans le code | Retour de test : trop d'inertie, atterrissage impossible. Révisable |
 | T8 | Simulation en temps réel même si l'appareil est lent (pas de lissage du delta Phaser) | Sinon le jeu passe au ralenti sur les petits téléphones |

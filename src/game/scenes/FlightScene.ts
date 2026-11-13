@@ -76,6 +76,7 @@ export class FlightScene extends Phaser.Scene {
       thresholds: CONTENT.landing,
       stabilize: true,
       autoThrottle: true,
+      arcade: true,
       firstArrival: sessionProgress.bestStars === 0,
     });
 

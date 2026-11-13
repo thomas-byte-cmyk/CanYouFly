@@ -9,7 +9,7 @@ export function cloneDef(def: AircraftDef = coucou): AircraftDef {
   return JSON.parse(JSON.stringify(def)) as AircraftDef;
 }
 
-export function newSession(def: AircraftDef = coucou, opts: { stabilize?: boolean; autoThrottle?: boolean } = {}) {
+export function newSession(def: AircraftDef = coucou, opts: { stabilize?: boolean; autoThrottle?: boolean; arcade?: boolean } = {}) {
   return new FlightSession({
     def,
     level: CONTENT.levels['paris-reims'],
@@ -18,6 +18,7 @@ export function newSession(def: AircraftDef = coucou, opts: { stabilize?: boolea
     thresholds: CONTENT.landing,
     stabilize: opts.stabilize ?? false,
     autoThrottle: opts.autoThrottle ?? true,
+    arcade: opts.arcade ?? false,
     firstArrival: true,
   });
 }

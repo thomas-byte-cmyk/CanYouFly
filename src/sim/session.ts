@@ -70,6 +70,8 @@ export interface SessionConfig {
   stabilize: boolean;
   autoThrottle: boolean;
   firstArrival: boolean;
+  /** Pilotage arcade (recommandé en jeu). */
+  arcade?: boolean;
 }
 
 const PILOT_BY_GRADE: Record<LandingGrade, PilotState> = {
@@ -109,7 +111,7 @@ export class FlightSession {
   constructor(readonly cfg: SessionConfig) {
     this.env = createEnv(cfg.level, cfg.tuning, cfg.surfaces);
     const trim = computeTrim(cfg.def, cfg.def.fuel.capacity, cfg.tuning);
-    this.runtime = { def: cfg.def, trimU: trim.trimU, alphaTrim: trim.alphaTrim, stabilize: cfg.stabilize, extraDrag: 0 };
+    this.runtime = { def: cfg.def, trimU: trim.trimU, alphaTrim: trim.alphaTrim, stabilize: cfg.stabilize, extraDrag: 0, arcade: cfg.arcade ?? false };
     this.state = createState(cfg.level.startX, 0, cfg.def.gear.height, cfg.def.fuel.capacity);
     this.autoThrottle = cfg.autoThrottle;
     this.ringsTaken = cfg.level.rings.map(() => false);

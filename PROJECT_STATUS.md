@@ -7,13 +7,14 @@ _Dernière mise à jour : 13/11/2026_
 | Phase | Statut |
 |---|---|
 | 1 — Conception et organisation | ✅ Validée le 13/11/2026 |
-| 2a — Sensation de vol | 🟢 v0.2 (13/11/2026) après le 1er test — à retester (issue #8) |
+| 2a — Sensation de vol | 🟢 v0.3 (13/11/2026) après le 2e test — à retester (issue #8) |
 | 2b — Prototype complet | ⚪ Après vos retours |
 | 3 — MVP complet | ⚪ |
 | 4 — Polish | ⚪ |
 | 5 — Publication Poki | ⚪ |
 
 ## ✅ Terminé
+- **v0.3** : pilotage arcade (plus d'inertie en tangage)
 - **v0.2** : atterrissage plus juste (effet de sol, ombre, impact prévu, zones), croisière enrichie (anneaux, boosts, Boulons, vent, oiseaux, montgolfière)
 - **Jalon « Sensation de vol » (v0.1)** : physique de vol maison, commandes clavier + tactile, étape Paris → Reims, atterrissage noté (5 résultats), écran de résultats, 22 tests automatiques, CI, déploiement GitHub Pages (issues #4 à #7)
 - **Validation des 15 décisions de conception** (issue #1) → `DECISIONS.md`

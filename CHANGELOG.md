@@ -4,6 +4,13 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+## [0.3.0] — 13/11/2026 — Pilotage arcade
+Retour : « je n'arrive toujours pas à atterrir, il y a trop d'inertie quand on va en haut et en bas ».
+- Mesure : en mode simulation, 0,5 s d'appui ne levait le nez que de ~3°, avec un retard de près d'1 s.
+- **Pilotage arcade par défaut** : la commande règle directement la vitesse de rotation du nez (42°/s), réponse en 0,08 s, arrêt net au relâchement ; la trajectoire suit le nez en ~0,3 s.
+- La stabilité de la construction reste perceptible (un avion lourd de l'arrière cabre toujours tout seul).
+- 4 nouveaux tests (30 au total) ; outil `scripts/pitch-check.ts` pour mesurer la réponse en tangage.
+
 ## [0.2.0] — 13/11/2026 — Retours du premier test
 Retours : « vol un peu ennuyeux », « impossible d'atterrir correctement » (crash au contact, on ne voit pas où viser).
 ### Atterrissage

@@ -21,5 +21,11 @@
   "ground": {
     "pitchMin": -0.03,
     "pitchMax": 0.22
+  },
+  "arcade": {
+    "pitchRateDeg": 42,
+    "response": 0.08,
+    "natural": 0.4,
+    "grip": 1.8
   }
 }
