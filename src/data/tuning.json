@@ -1,0 +1,20 @@
+{
+  "gravity": 9.8,
+  "rho": 1.0,
+  "ceilingStart": 420,
+  "ceilingEnd": 700,
+  "qMin": 150,
+  "trimLimit": 0.3,
+  "trimSpeed": 42,
+  "approachSpeed": 28,
+  "flapsDrag": 0.12,
+  "pitchRampTime": 0.15,
+  "assist": {
+    "extraDamping": 0.8,
+    "alphaHoldGain": 0.6
+  },
+  "ground": {
+    "pitchMin": -0.03,
+    "pitchMax": 0.22
+  }
+}

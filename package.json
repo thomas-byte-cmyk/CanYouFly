@@ -1,0 +1,23 @@
+{
+  "name": "can-you-fly",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CAN YOU FLY? (nom de code) — jeu d'arcade 2D : construis, pilote, atterris.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check-size": "node scripts/check-size.mjs"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "6.4.6",
+    "vitest": "3.2.7"
+  }
+}
