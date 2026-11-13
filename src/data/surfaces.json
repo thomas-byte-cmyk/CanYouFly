@@ -1,0 +1,10 @@
+{
+  "runway":   { "tolerance": 1.0,  "rolling": 0.02, "brake": 0.35, "landable": true,  "label": "piste" },
+  "grass":    { "tolerance": 0.85, "rolling": 0.06, "brake": 0.4,  "landable": true,  "label": "pelouse" },
+  "park":     { "tolerance": 0.85, "rolling": 0.06, "brake": 0.4,  "landable": true,  "label": "parc" },
+  "field":    { "tolerance": 0.8,  "rolling": 0.09, "brake": 0.45, "landable": true,  "label": "champ" },
+  "vineyard": { "tolerance": 0.65, "rolling": 0.14, "brake": 0.5,  "landable": true,  "label": "vignes" },
+  "water":    { "tolerance": 0,    "rolling": 0,    "brake": 0,    "landable": false, "label": "eau" },
+  "forest":   { "tolerance": 0,    "rolling": 0,    "brake": 0,    "landable": false, "label": "forêt" },
+  "city":     { "tolerance": 0,    "rolling": 0,    "brake": 0,    "landable": false, "label": "ville" }
+}

@@ -45,3 +45,18 @@ Phaser 3 · TypeScript · Vite · physique de vol maison · sauvegarde locale ro
 ## Méthode
 
 Projet piloté par un chef de projet IA (Claude Code) et quatre agents spécialisés (Développement, Game Design & DA, Marketing, Économie), sous la validation du porteur du projet. Tâches suivies dans les [issues](../../issues).
+
+## Lancer le jeu en local (développeurs)
+
+Prérequis : [Node.js](https://nodejs.org) 22 ou plus récent.
+
+```bash
+npm install        # installe Phaser, TypeScript, Vite, Vitest
+npm run dev        # lance le jeu sur http://localhost:5173
+npm test           # tests automatiques (physique, atterrissage, récompenses)
+npm run build      # version de production dans dist/
+```
+
+Outils de réglage (sans affichage) : `npx vite-node scripts/simulate.ts` et `npx vite-node scripts/landing-check.ts`.
+
+Toutes les valeurs de jeu sont dans `src/data/` (avion, physique, surfaces, seuils d'atterrissage, étape) et se modifient sans toucher au code.

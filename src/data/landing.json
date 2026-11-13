@@ -1,0 +1,10 @@
+{
+  "perfect": 0.5,
+  "good": 1.0,
+  "rough": 1.6,
+  "pitchIdealMinDeg": -2,
+  "pitchIdealMaxDeg": 10,
+  "noseFirstDeg": -12,
+  "horizontalWeight": 0.6,
+  "gentleObstacleSpeed": 8
+}
