@@ -1,0 +1,18 @@
+# Dépendances et builds (pour les phases suivantes)
+node_modules/
+dist/
+build/
+.cache/
+coverage/
+
+# Environnement / secrets — ne jamais committer
+.env
+.env.*
+*.pem
+*.key
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
