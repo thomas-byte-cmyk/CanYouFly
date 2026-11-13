@@ -77,7 +77,7 @@ Pour que les étapes maritimes restent justes : **îlots**, **ferry / plateforme
 
 Gabarit : **« Départ de {ville}. Destination {ville}. {Résultat} {lieu} {distance relative}. »**
 - « Départ de Paris. Destination Reims. Atterrissage parfait sur la piste de Reims. »
-- « Départ d'Amsterdam. Destination Londres. Plouf dans la Manche à 23 km des falaises de Douvres. »
+- « Départ d'Amsterdam. Destination Londres. Plouf dans la mer du Nord, à 23 km de la côte anglaise. »
 - « Départ de Berlin. Destination Rome. Atterri sur un plateau alpin, à mi-chemin. Les chèvres sont impressionnées. »
 
 Le **carnet de voyage** (MVP) liste : villes atteintes, meilleur atterrissage par ville, record de distance par étape, cartes postales collectionnées.
