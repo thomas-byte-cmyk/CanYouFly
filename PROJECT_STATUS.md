@@ -35,6 +35,13 @@ _Dernière mise à jour : 13/11/2026_
 | **GitHub Pages à activer** | Réglage du dépôt que seul le propriétaire peut faire | Settings → Pages → Source : « GitHub Actions » (voir ci-dessous) |
 | **Branche par défaut** | Elle pointe encore sur la branche de session | Settings → General → Default branch → `main` |
 
+### Activer GitHub Pages (2 minutes, une seule fois)
+1. Ouvrir le dépôt sur GitHub → onglet **Settings** (en haut à droite).
+2. Menu de gauche → **Pages**.
+3. Rubrique **Build and deployment** → **Source** : choisir **GitHub Actions**.
+4. Onglet **Actions** → workflow **Déploiement GitHub Pages** → bouton **Run workflow** (branche `main`).
+5. Le jeu est ensuite en ligne à l'adresse https://thomas-byte-cmyk.github.io/CanYouFly/ (mise à jour automatique à chaque fusion dans `main`).
+
 ### Créer les milestones à la main (optionnel)
 1. Ouvrir le dépôt sur GitHub → onglet **Issues** → bouton **Milestones** → **New milestone**.
 2. Créer : `M1 — Conception validée`, `M2 — Prototype jouable`, `M3 — MVP complet`, `M4 — Polish`, `M5 — Soumission Poki`.
