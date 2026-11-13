@@ -2,17 +2,19 @@
 
 _Dernière mise à jour : 13/11/2026_
 
-## Phase actuelle : ✅ Phase 1 — Conception **validée** · ⏸️ Phase 2 en attente du feu vert de démarrage
+## Phase actuelle : 🟢 Phase 2 — Jalon « Sensation de vol » livré, **en attente de vos retours de jeu**
 
 | Phase | Statut |
 |---|---|
 | 1 — Conception et organisation | ✅ Validée le 13/11/2026 |
-| 2 — Prototype jouable | ⏸️ Prête à démarrer (feu vert attendu) |
+| 2a — Sensation de vol | 🟢 Première version jouable (13/11/2026) — à tester sur téléphone (issue #8) |
+| 2b — Prototype complet | ⚪ Après vos retours |
 | 3 — MVP complet | ⚪ |
 | 4 — Polish | ⚪ |
 | 5 — Publication Poki | ⚪ |
 
 ## ✅ Terminé
+- **Jalon « Sensation de vol » (v0.1)** : physique de vol maison, commandes clavier + tactile, étape Paris → Reims, atterrissage noté (5 résultats), écran de résultats, 22 tests automatiques, CI, déploiement GitHub Pages (issues #4 à #7)
 - **Validation des 15 décisions de conception** (issue #1) → `DECISIONS.md`
 - Harmonisation des documents avec les décisions (issue #2)
 - Analyse du cahier des charges, critique et arbitrages → [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md)
@@ -22,7 +24,7 @@ _Dernière mise à jour : 13/11/2026_
 - 18 issues de suivi (phases 1, 2 et epic MVP), labels créés → [issues](../../issues)
 
 ## 🔄 En cours
-- Rien — en attente du feu vert pour démarrer le jalon « Sensation de vol » (issues #4 à #8).
+- Point de validation « Sensation de vol » (issue #8) : vous jouez, on ajuste.
 
 ## ⛔ Bloqué / nécessite une intervention humaine
 | Blocage | Pourquoi | Action requise |
@@ -30,14 +32,20 @@ _Dernière mise à jour : 13/11/2026_
 | **Milestones et GitHub Project non créés** | Les outils GitHub de l'IA ne permettent pas de créer des milestones ni des Projects | Option : les créer à la main (5 min, voir ci-dessous) ; sinon les labels `phase:*` les remplacent |
 | **Pages officielles Poki non lues en entier** | Le réseau de l'environnement de l'IA bloque `poki.com` | Relecture humaine des 3 pages de référence avant la Phase 3 (issue #3) |
 | **Accès Poki for Developers** | Plateforme en bêta fermée | Candidater quand le prototype sera jouable (issue #17) |
-| **Branche `main` pas encore créée** | Le travail de conception est sur la branche de session | Sera fusionné dans `main` après validation |
+| **GitHub Pages à activer** | Réglage du dépôt que seul le propriétaire peut faire | Settings → Pages → Source : « GitHub Actions » (voir ci-dessous) |
+| **Branche par défaut** | Elle pointe encore sur la branche de session | Settings → General → Default branch → `main` |
 
 ### Créer les milestones à la main (optionnel)
 1. Ouvrir le dépôt sur GitHub → onglet **Issues** → bouton **Milestones** → **New milestone**.
 2. Créer : `M1 — Conception validée`, `M2 — Prototype jouable`, `M3 — MVP complet`, `M4 — Polish`, `M5 — Soumission Poki`.
 3. Me le signaler : je rattacherai les issues existantes.
 
-## ⏭️ À venir (après validation)
-1. Créer `main` à partir de la conception validée.
-2. Jalon **« Sensation de vol »** (~2 semaines) : physique, contrôles, une piste, atterrissage noté, en ligne sur GitHub Pages.
-3. Prototype complet (hangar, pièces, 2 étapes, résultats, pilote, sons).
+## ⏭️ À venir
+1. Vos retours sur le vol et l'atterrissage → réglages (fichiers `src/data/*.json`).
+2. Prototype complet (2b) : hangar à emplacements, ~24 pièces, Pip personnalisable, dégâts visibles, sons, 2e étape.
+
+## Limites connues de la v0.1
+- Graphismes en formes simples (placeholders), pas de son.
+- Écrans très allongés (téléphones récents) : bandes sur les côtés.
+- Pas encore de sauvegarde : les Boulons sont perdus en rechargeant la page.
+- Le parc ★★★ est volontairement très difficile ; à confirmer en jeu.
