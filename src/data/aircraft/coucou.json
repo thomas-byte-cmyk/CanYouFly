@@ -20,6 +20,6 @@
   ],
   "pitch": { "authority": 2.0, "damping": 5.0, "inertiaBase": 300 },
   "refChord": 2,
-  "gear": { "tolerance": 6, "vhMax": 40, "height": 1.6, "x": 0.6 },
+  "gear": { "tolerance": 7, "vhMax": 40, "height": 1.6, "x": 0.6 },
   "geometry": { "noseX": 4.0, "tailX": -5.8, "topY": 1.1 }
 }

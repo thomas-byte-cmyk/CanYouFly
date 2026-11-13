@@ -1,12 +1,15 @@
 import Phaser from 'phaser';
-import type { LandingZone, Level, Obstacle } from '../../sim/world';
+import type { LandingZone, Level, Mover, Obstacle } from '../../sim/world';
 import { C, CSS, PX, textStyle } from '../style';
 
 const DEPTH = 60 * PX;
 const STAR_COLOR = { 1: 0x4f9e3f, 2: 0xf2c94c, 3: 0xd9573b } as const;
 
 /** Dessine le décor statique de l'étape dans les coordonnées monde (y vers le bas, sol en y = 0). */
-export function drawWorld(scene: Phaser.Scene, level: Level): { rings: Phaser.GameObjects.Graphics[]; updrafts: Phaser.GameObjects.Graphics[] } {
+export function drawWorld(
+  scene: Phaser.Scene,
+  level: Level,
+): { rings: Phaser.GameObjects.Graphics[]; updrafts: Phaser.GameObjects.Graphics[]; bolts: Phaser.GameObjects.Graphics[] } {
   const g = scene.add.graphics();
 
   // Sol et surfaces.
@@ -101,15 +104,54 @@ export function drawWorld(scene: Phaser.Scene, level: Level): { rings: Phaser.Ga
     return ug;
   });
 
-  // Anneaux.
+  // Zones de vent (annoncées par des traînées et une étiquette).
+  for (const w of level.wind) {
+    const wg = scene.add.graphics();
+    const x0 = w.x0 * PX;
+    const x1 = w.x1 * PX;
+    wg.lineStyle(3, C.white, 0.6);
+    for (let y = 60; y < 1600; y += 110) {
+      for (let x = x0 + ((y / 110) % 2) * 60; x < x1 - 60; x += 160) {
+        if (w.gust) {
+          wg.beginPath();
+          for (let k = 0; k <= 8; k++) wg.lineTo(x + k * 8, -y + Math.sin(k) * 8);
+          wg.strokePath();
+        } else {
+          wg.lineBetween(x, -y, x + 60, -y);
+          wg.lineBetween(x + 60, -y, x + 48, -y - 8);
+          wg.lineBetween(x + 60, -y, x + 48, -y + 8);
+        }
+      }
+    }
+    scene.tweens.add({ targets: wg, alpha: { from: 0.5, to: 1 }, yoyo: true, repeat: -1, duration: 700 });
+    if (w.label) scene.add.text((x0 + x1) / 2, -260, w.label, textStyle(22, CSS.white, { stroke: CSS.ink, strokeThickness: 6 })).setOrigin(0.5);
+  }
+
+  // Anneaux (orange ; vert = boost).
   const rings = level.rings.map((r) => {
     const rg = scene.add.graphics();
+    const color = r.kind === 'boost' ? C.green : C.orange;
     rg.lineStyle(9, C.ink, 1).strokeEllipse(r.x * PX, -r.y * PX, r.r * PX * 0.7, r.r * PX * 2);
-    rg.lineStyle(6, C.orange, 1).strokeEllipse(r.x * PX, -r.y * PX, r.r * PX * 0.7, r.r * PX * 2);
+    rg.lineStyle(6, color, 1).strokeEllipse(r.x * PX, -r.y * PX, r.r * PX * 0.7, r.r * PX * 2);
+    if (r.kind === 'boost') {
+      rg.fillStyle(C.green, 1);
+      rg.fillTriangle(r.x * PX - 10, -r.y * PX - 12, r.x * PX + 14, -r.y * PX, r.x * PX - 10, -r.y * PX + 12);
+    }
     return rg;
   });
 
-  return { rings, updrafts };
+  // Boulons à ramasser.
+  const bolts = level.bolts.map((b) => {
+    const bg = scene.add.graphics({ x: b.x * PX, y: -b.y * PX });
+    const pts: Phaser.Math.Vector2[] = [];
+    for (let i = 0; i < 6; i++) pts.push(new Phaser.Math.Vector2(Math.cos((i * Math.PI) / 3) * 11, Math.sin((i * Math.PI) / 3) * 11));
+    bg.fillStyle(C.yellow, 1).fillPoints(pts, true).lineStyle(3, C.ink, 1).strokePoints(pts, true);
+    bg.fillStyle(0x8a7a5a, 1).fillCircle(0, 0, 4);
+    scene.tweens.add({ targets: bg, scaleX: { from: 1, to: 0.3 }, yoyo: true, repeat: -1, duration: 600 });
+    return bg;
+  });
+
+  return { rings, updrafts, bolts };
 }
 
 function drawObstacle(g: Phaser.GameObjects.Graphics, o: Obstacle): void {
@@ -199,4 +241,29 @@ function drawWindsock(g: Phaser.GameObjects.Graphics, x: number): void {
   g.fillStyle(C.orange, 1).fillTriangle(x, -60, x + 34, -54, x, -46);
   g.fillStyle(C.white, 1).fillTriangle(x + 10, -58.5, x + 20, -56.5, x + 10, -47.8);
   g.lineStyle(2, C.ink, 1).strokeTriangle(x, -60, x + 34, -54, x, -46);
+}
+
+/** Obstacle vivant (positionné à chaque image par la scène de vol). */
+export function drawMover(scene: Phaser.Scene, m: Mover): Phaser.GameObjects.Container {
+  const g = scene.add.graphics();
+  if (m.type === 'balloon') {
+    const r = m.r * PX * 0.9;
+    g.lineStyle(3, C.ink, 1);
+    g.lineBetween(-r * 0.5, r * 0.8, -r * 0.25, r * 1.5);
+    g.lineBetween(r * 0.5, r * 0.8, r * 0.25, r * 1.5);
+    g.fillStyle(C.red, 1).fillCircle(0, 0, r).strokeCircle(0, 0, r);
+    g.fillStyle(C.yellow, 1).fillEllipse(0, 0, r * 0.9, r * 2).strokeEllipse(0, 0, r * 0.9, r * 2);
+    g.fillStyle(0x8a5a3c, 1).fillRect(-r * 0.3, r * 1.5, r * 0.6, r * 0.45).strokeRect(-r * 0.3, r * 1.5, r * 0.6, r * 0.45);
+  } else {
+    g.lineStyle(4, C.ink, 1);
+    const offs: [number, number][] = [[0, 0], [22, -14], [20, 16], [42, 2]];
+    for (const [x, y] of offs) {
+      g.beginPath();
+      g.moveTo(x - 10, y - 6);
+      g.lineTo(x, y);
+      g.lineTo(x + 10, y - 6);
+      g.strokePath();
+    }
+  }
+  return scene.add.container(0, 0, [g]);
 }

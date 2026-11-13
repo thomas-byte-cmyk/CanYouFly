@@ -32,7 +32,7 @@ function attempt(touchX: number, flareAlt: number, targetSink: number) {
   return s.result!;
 }
 
-for (const [x, f, k] of (process.env.ONLY ? [[2665, 3, 1]] : [[2260, 6, 1.5], [2260, 4, 1], [2300, 8, 2], [1900, 6, 1.5], [1950, 3, 1], [2660, 6, 1.5], [2665, 3, 1]]) as [number, number, number][]) {
+for (const [x, f, k] of (process.env.ONLY ? [[2665, 3, 1]] : process.env.NOFLARE ? [[2260, 0, 0], [2300, 0, 0], [1900, 0, 0]] : [[2260, 6, 1.5], [2260, 4, 1], [2300, 8, 2], [1900, 6, 1.5], [1950, 3, 1], [2660, 6, 1.5], [2665, 3, 1]]) as [number, number, number][]) {
   const r = attempt(x, f, k);
   console.log(`cible x=${x} arrondi=${f} sink=${k} → ${r.grade} (${r.reason}) zone=${r.zone?.name ?? '-'} rv=${r.touchdown?.rv.toFixed(2)} ra=${r.touchdown?.ra.toFixed(2)} rh=${r.touchdown?.rh.toFixed(2)}`);
 }

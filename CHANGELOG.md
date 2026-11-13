@@ -4,6 +4,22 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+## [0.2.0] — 13/11/2026 — Retours du premier test
+Retours : « vol un peu ennuyeux », « impossible d'atterrir correctement » (crash au contact, on ne voit pas où viser).
+### Atterrissage
+- Effet de sol : coussin d'air près du sol qui adoucit la fin de descente.
+- Seuils plus tolérants (train : 7 u/s ; nez jusqu'à −4° accepté) ; freinage plus fort après le contact ; lampadaire éloigné de la piste.
+- Ombre de l'avion au sol pour juger la hauteur.
+- Point d'impact prévu avec le résultat annoncé (PARFAIT / BON / BRUTAL / CRASH / PLOUF).
+- Liste des zones devant l'avion avec la distance ; rappel « RELÈVE LE NEZ ! » près du sol.
+### Croisière
+- 3 séries d'anneaux (bonus de série +10), anneau boost vert.
+- 21 Boulons à ramasser en vol.
+- Vent arrière, zone de rafales, deuxième ascendance.
+- Obstacles vivants : montgolfière (rebond « boing ») et deux vols d'oiseaux (ralentissement, plumes), sans crash.
+### Tests
+- 26 tests ; un pilote robot obtient PERFECT/GOOD sur la piste et le champ, même sans arrondi si la descente est calme.
+
 ## [0.1.0] — 13/11/2026 — Jalon « Sensation de vol »
 ### Ajouté
 - Simulateur de vol maison (pas fixe 60 Hz) : portance avec décrochage, traînée, poussée d'hélice, centre de gravité et marge statique, trim automatique, plafond doux, ascendances.

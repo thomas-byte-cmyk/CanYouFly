@@ -3,7 +3,7 @@ import { FIXED_DT, bodyPoint, createState, stepPhysics } from './flight';
 import { type LandingGrade, type LandingThresholds, type TouchdownResult, evaluateTouchdown, worstGrade } from './landing';
 import { type Reward, computeReward, starsFor } from './rewards';
 import type { AircraftDef, AircraftRuntime, Env, FlightState, SurfaceProps, SurfaceType, Tuning } from './types';
-import { type LandingZone, type Level, createEnv, obstacleAt, zoneAt } from './world';
+import { type LandingZone, type Level, createEnv, moverPos, obstacleAt, zoneAt } from './world';
 
 export type Phase = 'ground' | 'flying' | 'rolling' | 'ended';
 
@@ -27,7 +27,11 @@ export interface ControlInput {
 
 export type SessionEvent =
   | { type: 'takeoff' }
-  | { type: 'ring'; index: number }
+  | { type: 'ring'; index: number; boost: boolean }
+  | { type: 'chain'; chain: string }
+  | { type: 'bolt'; index: number }
+  | { type: 'bird'; index: number }
+  | { type: 'balloon'; index: number }
   | { type: 'touchdown'; result: TouchdownResult }
   | { type: 'fuel-empty' }
   | { type: 'approach' }
@@ -49,6 +53,9 @@ export interface FlightResult {
   maxSpeed: number;
   rings: number;
   ringsTotal: number;
+  bolts: number;
+  boltsTotal: number;
+  chains: number;
   fuelEmpty: boolean;
   reward: Reward;
   pilot: PilotState;
@@ -86,6 +93,10 @@ export class FlightSession {
   inApproach = false;
   flaps = false;
   ringsTaken: boolean[];
+  boltsTaken: boolean[];
+  chainsDone = new Set<string>();
+  /** Temps jusqu'auquel un obstacle vivant ne peut plus être heurté (évite les doubles chocs). */
+  private moverCooldown: number[];
   result?: FlightResult;
   private grade: LandingGrade = 'PERFECT';
   private touchdown?: TouchdownResult;
@@ -102,6 +113,8 @@ export class FlightSession {
     this.state = createState(cfg.level.startX, 0, cfg.def.gear.height, cfg.def.fuel.capacity);
     this.autoThrottle = cfg.autoThrottle;
     this.ringsTaken = cfg.level.rings.map(() => false);
+    this.boltsTaken = cfg.level.bolts.map(() => false);
+    this.moverCooldown = cfg.level.movers.map(() => 0);
   }
 
   get aggregates() {
@@ -153,13 +166,7 @@ export class FlightSession {
       this.events.push({ type: 'approach' });
     }
 
-    // Anneaux.
-    this.cfg.level.rings.forEach((r, i) => {
-      if (!this.ringsTaken[i] && Math.hypot(s.x - r.x, s.y - r.y) <= r.r) {
-        this.ringsTaken[i] = true;
-        this.events.push({ type: 'ring', index: i });
-      }
-    });
+    this.collectibles();
 
     // Collisions avec les obstacles (nez, queue, train, dessus du fuselage).
     const g = this.cfg.def.geometry;
@@ -273,6 +280,54 @@ export class FlightSession {
     }
   }
 
+  /** Anneaux, séries, boosts, Boulons, obstacles vivants. */
+  private collectibles(): void {
+    const s = this.state;
+    const lvl = this.cfg.level;
+    lvl.rings.forEach((r, i) => {
+      if (this.ringsTaken[i] || Math.hypot(s.x - r.x, s.y - r.y) > r.r) return;
+      this.ringsTaken[i] = true;
+      const boost = r.kind === 'boost';
+      if (boost) {
+        const v = Math.hypot(s.vx, s.vy) || 1;
+        s.vx += (s.vx / v) * 9;
+        s.vy += (s.vy / v) * 9;
+      }
+      this.events.push({ type: 'ring', index: i, boost });
+      if (r.chain && !this.chainsDone.has(r.chain)) {
+        const all = lvl.rings.every((o, j) => o.chain !== r.chain || this.ringsTaken[j]);
+        if (all) {
+          this.chainsDone.add(r.chain);
+          this.events.push({ type: 'chain', chain: r.chain });
+        }
+      }
+    });
+    lvl.bolts.forEach((b, i) => {
+      if (!this.boltsTaken[i] && Math.hypot(s.x - b.x, s.y - b.y) <= 4) {
+        this.boltsTaken[i] = true;
+        this.events.push({ type: 'bolt', index: i });
+      }
+    });
+    lvl.movers.forEach((m, i) => {
+      if (s.time < this.moverCooldown[i]) return;
+      const p = moverPos(m, s.time);
+      if (Math.hypot(s.x - p.x, s.y - p.y) > m.r) return;
+      this.moverCooldown[i] = s.time + 2;
+      if (m.type === 'birds') {
+        // Oiseaux : l'avion est secoué et ralentit, sans crash (humour familial).
+        s.vx *= 0.82;
+        s.omega += 0.6;
+        this.events.push({ type: 'bird', index: i });
+      } else {
+        // Montgolfière : rebond « boing ».
+        s.vx *= 0.6;
+        s.vy = 8;
+        s.omega += 0.4;
+        this.events.push({ type: 'balloon', index: i });
+      }
+    });
+  }
+
   /** Volets automatiques : l'avion se recale sur une vitesse d'approche plus lente (aide arcade). */
   deployFlaps(): void {
     const t = this.cfg.tuning;
@@ -304,6 +359,7 @@ export class FlightSession {
     const grade = this.grade;
     const validated = !!zone && zone.arrival && grade !== 'WATER' && this.hasTakenOff;
     const rings = this.ringsTaken.filter(Boolean).length;
+    const bolts = this.boltsTaken.filter(Boolean).length;
     const reward = computeReward({
       level,
       endX: s.x,
@@ -311,6 +367,8 @@ export class FlightSession {
       landed,
       zone: landed ? zone : undefined,
       rings,
+      bolts,
+      chains: this.chainsDone.size,
       validated,
       firstArrival: this.cfg.firstArrival,
     });
@@ -331,6 +389,9 @@ export class FlightSession {
       maxSpeed: this.maxSpeed,
       rings,
       ringsTotal: level.rings.length,
+      bolts,
+      boltsTotal: level.bolts.length,
+      chains: this.chainsDone.size,
       fuelEmpty: s.fuel <= 0,
       reward,
       pilot: PILOT_BY_GRADE[grade],
@@ -340,20 +401,40 @@ export class FlightSession {
 
   /**
    * Trajectoire prévue (aide à l'approche) : même modèle physique, commandes neutres,
-   * gaz actuels. Renvoie les points jusqu'au contact ou après `seconds`.
+   * gaz actuels. Renvoie les points et, si l'avion touche dans l'horizon, le résultat prévu.
    */
-  predict(seconds: number, every = 6): { x: number; y: number }[] {
+  predict(seconds: number, every = 6): { points: { x: number; y: number }[]; outcome?: { x: number; grade: LandingGrade } } {
     const s: FlightState = { ...this.state };
-    const pts: { x: number; y: number }[] = [];
+    const points: { x: number; y: number }[] = [];
     const n = Math.round(seconds / FIXED_DT);
+    const gearH = this.cfg.def.gear.height;
     for (let i = 0; i < n; i++) {
       const info = stepPhysics(s, this.runtime, this.env, { pitch: 0, throttle: this.throttle, brake: false });
-      if (i % every === 0) pts.push({ x: s.x, y: s.y - this.cfg.def.gear.height });
+      if (i % every === 0) points.push({ x: s.x, y: s.y - gearH });
+      if (obstacleAt(this.cfg.level, s.x, s.y - gearH) || obstacleAt(this.cfg.level, s.x, s.y)) {
+        points.push({ x: s.x, y: s.y - gearH });
+        return { points, outcome: { x: s.x, grade: 'CRASH' } };
+      }
       if (info.contact) {
-        pts.push({ x: s.x, y: s.y - this.cfg.def.gear.height });
-        break;
+        points.push({ x: s.x, y: s.y - gearH });
+        const surfaceType = this.env.surfaceAt(s.x);
+        if (surfaceType === 'water') return { points, outcome: { x: s.x, grade: 'WATER' } };
+        const td = evaluateTouchdown(
+          {
+            sink: info.impactSink,
+            groundSpeed: s.vx,
+            pitch: s.theta,
+            surface: this.env.surfaceProps(surfaceType),
+            gearTolerance: this.cfg.def.gear.tolerance,
+            gearVhMax: this.cfg.def.gear.vhMax,
+          },
+          this.cfg.thresholds,
+        );
+        let grade = td.grade;
+        if (!zoneAt(this.cfg.level, s.x) && (grade === 'PERFECT' || grade === 'GOOD')) grade = 'ROUGH';
+        return { points, outcome: { x: s.x, grade } };
       }
     }
-    return pts;
+    return { points };
   }
 }

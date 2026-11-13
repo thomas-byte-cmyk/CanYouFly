@@ -36,6 +36,9 @@ export interface WindZone {
   x1: number;
   wx: number;
   wy: number;
+  /** Amplitude des rafales verticales (turbulences régulières, donc prévisibles). */
+  gust?: number;
+  label?: string;
 }
 
 export interface UpdraftZone {
@@ -49,6 +52,33 @@ export interface Ring {
   x: number;
   y: number;
   r: number;
+  /** Un anneau « boost » donne un coup d'accélération. */
+  kind?: 'normal' | 'boost';
+  /** Série d'anneaux : bonus si toute la série est traversée. */
+  chain?: string;
+}
+
+/** Boulon à ramasser en vol. */
+export interface Bolt {
+  x: number;
+  y: number;
+}
+
+/** Obstacle vivant à trajectoire prévisible (oiseaux, montgolfière). Le heurter pénalise sans crash. */
+export interface Mover {
+  type: 'birds' | 'balloon';
+  x0: number;
+  y0: number;
+  /** Vitesse horizontale (u/s, négative = vers le joueur). */
+  vx: number;
+  /** Oscillation verticale. */
+  amp: number;
+  period: number;
+  r: number;
+}
+
+export function moverPos(m: Mover, t: number): { x: number; y: number } {
+  return { x: m.x0 + m.vx * t, y: m.y0 + m.amp * Math.sin((2 * Math.PI * t) / m.period) };
 }
 
 export interface Level {
@@ -70,6 +100,8 @@ export interface Level {
   wind: WindZone[];
   updrafts: UpdraftZone[];
   rings: Ring[];
+  bolts: Bolt[];
+  movers: Mover[];
   landmarks: { type: string; x: number; label?: string }[];
 }
 
@@ -93,8 +125,13 @@ export function obstacleAt(level: Level, x: number, y: number): Obstacle | undef
 export function createEnv(level: Level, tuning: Tuning, surfaces: Record<SurfaceType, SurfaceProps>): Env {
   return {
     tuning,
-    windAt(x) {
-      for (const w of level.wind) if (x >= w.x0 && x <= w.x1) return { x: w.wx, y: w.wy };
+    windAt(x, _y, t) {
+      for (const w of level.wind) {
+        if (x >= w.x0 && x <= w.x1) {
+          const gust = w.gust ? w.gust * Math.sin(t * 2.2 + x * 0.05) : 0;
+          return { x: w.wx, y: w.wy + gust };
+        }
+      }
       return { x: 0, y: 0 };
     },
     updraftAt(x, y) {

@@ -19,6 +19,8 @@ export class HudScene extends Phaser.Scene {
   private warning!: Phaser.GameObjects.Text;
   private sinkText!: Phaser.GameObjects.Text;
   private debug!: Phaser.GameObjects.Text;
+  private zonesText!: Phaser.GameObjects.Text;
+  private flare!: Phaser.GameObjects.Text;
   private autoButton!: Phaser.GameObjects.Text;
   private flashUntil = 0;
   private debugOn = false;
@@ -43,7 +45,9 @@ export class HudScene extends Phaser.Scene {
     this.flash = this.add.text(640, 200, '', textStyle(34, CSS.yellow, { stroke: CSS.ink, strokeThickness: 8 })).setOrigin(0.5);
     this.warning = this.add.text(640, 260, '', textStyle(40, CSS.red, { stroke: CSS.cream, strokeThickness: 8 })).setOrigin(0.5);
     this.sinkText = this.add.text(1256, 110, '', textStyle(20, CSS.ink, { backgroundColor: '#fdf3e1', padding: { x: 10, y: 6 } })).setOrigin(1, 0);
-    this.debug = this.add.text(1256, 160, '', textStyle(14, CSS.ink, { backgroundColor: '#ffffffcc', padding: { x: 6, y: 4 } })).setOrigin(1, 0).setVisible(false);
+    this.zonesText = this.add.text(1256, 160, '', textStyle(18, CSS.ink, { backgroundColor: '#fdf3e1e6', padding: { x: 10, y: 6 }, align: 'right' })).setOrigin(1, 0);
+    this.flare = this.add.text(640, 330, '', textStyle(44, CSS.yellow, { stroke: CSS.ink, strokeThickness: 9 })).setOrigin(0.5);
+    this.debug = this.add.text(1256, 300, '', textStyle(14, CSS.ink, { backgroundColor: '#ffffffcc', padding: { x: 6, y: 4 } })).setOrigin(1, 0).setVisible(false);
 
     // Bouton pause (toujours visible, exigence mobile).
     const pause = this.add.text(1240, 18, 'II', textStyle(30, CSS.cream, { backgroundColor: '#2b2321', padding: { x: 16, y: 6 } })).setOrigin(1, 0).setInteractive({ useHandCursor: true });
@@ -141,8 +145,20 @@ export class HudScene extends Phaser.Scene {
       const color = sink <= tol * 0.5 ? CSS.green : sink <= tol ? CSS.blue : sink <= tol * 1.6 ? CSS.orange : CSS.red;
       const label = sink <= tol * 0.5 ? 'PARFAITE' : sink <= tol ? 'BONNE' : sink <= tol * 1.6 ? 'BRUTALE' : 'TROP RAPIDE';
       this.sinkText.setVisible(true).setColor(color).setText(`Descente : ${label}`);
+
+      // Zones devant l'avion, avec la distance (« où viser »).
+      const ahead = lvl.zones.filter((z) => z.arrival && z.x1 > st.x);
+      this.zonesText
+        .setVisible(ahead.length > 0)
+        .setText(ahead.map((z) => `${'★'.repeat(z.difficulty)} ${z.name} : ${z.x0 > st.x ? `${((z.x0 - st.x) * lvl.kmPerUnit).toFixed(1).replace('.', ',')} km` : 'dessous !'}`).join('\n'));
+
+      // Rappel d'arrondi : près du sol et descente trop rapide.
+      const needFlare = s.altitude < 8 && sink > tol * 0.55 && this.controls.pitch <= 0;
+      this.flare.setText(needFlare && Math.floor(this.time.now / 200) % 2 === 0 ? (this.controls.isTouch ? '↑ RELÈVE LE NEZ (pouce vers le haut) !' : '↑ RELÈVE LE NEZ !') : '');
     } else {
       this.sinkText.setVisible(false);
+      this.zonesText.setVisible(false);
+      this.flare.setText('');
     }
 
     this.warning.setText(st.stalled && s.phase === 'flying' && Math.floor(this.time.now / 250) % 2 === 0 ? 'DÉCROCHAGE ! Pique pour reprendre de la vitesse' : '');

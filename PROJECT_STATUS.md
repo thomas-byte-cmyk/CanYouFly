@@ -7,13 +7,14 @@ _Dernière mise à jour : 13/11/2026_
 | Phase | Statut |
 |---|---|
 | 1 — Conception et organisation | ✅ Validée le 13/11/2026 |
-| 2a — Sensation de vol | 🟢 Première version jouable (13/11/2026) — à tester sur téléphone (issue #8) |
+| 2a — Sensation de vol | 🟢 v0.2 (13/11/2026) après le 1er test — à retester (issue #8) |
 | 2b — Prototype complet | ⚪ Après vos retours |
 | 3 — MVP complet | ⚪ |
 | 4 — Polish | ⚪ |
 | 5 — Publication Poki | ⚪ |
 
 ## ✅ Terminé
+- **v0.2** : atterrissage plus juste (effet de sol, ombre, impact prévu, zones), croisière enrichie (anneaux, boosts, Boulons, vent, oiseaux, montgolfière)
 - **Jalon « Sensation de vol » (v0.1)** : physique de vol maison, commandes clavier + tactile, étape Paris → Reims, atterrissage noté (5 résultats), écran de résultats, 22 tests automatiques, CI, déploiement GitHub Pages (issues #4 à #7)
 - **Validation des 15 décisions de conception** (issue #1) → `DECISIONS.md`
 - Harmonisation des documents avec les décisions (issue #2)
@@ -32,7 +33,6 @@ _Dernière mise à jour : 13/11/2026_
 | **Milestones et GitHub Project non créés** | Les outils GitHub de l'IA ne permettent pas de créer des milestones ni des Projects | Option : les créer à la main (5 min, voir ci-dessous) ; sinon les labels `phase:*` les remplacent |
 | **Pages officielles Poki non lues en entier** | Le réseau de l'environnement de l'IA bloque `poki.com` | Relecture humaine des 3 pages de référence avant la Phase 3 (issue #3) |
 | **Accès Poki for Developers** | Plateforme en bêta fermée | Candidater quand le prototype sera jouable (issue #17) |
-| **GitHub Pages à activer** | Réglage du dépôt que seul le propriétaire peut faire | Settings → Pages → Source : « GitHub Actions » (voir ci-dessous) |
 | **Branche par défaut** | Elle pointe encore sur la branche de session | Settings → General → Default branch → `main` |
 
 ### Activer GitHub Pages (2 minutes, une seule fois)
