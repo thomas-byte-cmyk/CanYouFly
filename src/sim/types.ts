@@ -60,6 +60,8 @@ export interface Tuning {
   approachSpeed: number;
   flapsDrag: number;
   pitchRampTime: number;
+  /** Effet de sol : coussin d'air près du sol qui adoucit la fin de descente. */
+  groundEffect: { height: number; liftBoost: number; cushion: number };
   assist: { extraDamping: number; alphaHoldGain: number };
   ground: { pitchMin: number; pitchMax: number };
 }
@@ -112,7 +114,8 @@ export interface FlightState {
 
 export interface Env {
   tuning: Tuning;
-  windAt(x: number, y: number): { x: number; y: number };
+  /** Vent à la position (x, y) au temps t (les rafales varient dans le temps). */
+  windAt(x: number, y: number, t: number): { x: number; y: number };
   /** Accélération verticale supplémentaire (ascendance > 0). */
   updraftAt(x: number, y: number): number;
   groundHeightAt(x: number): number;

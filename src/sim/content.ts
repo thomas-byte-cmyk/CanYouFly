@@ -10,7 +10,7 @@ import type { Level } from './world';
 /** Données de jeu (JSON éditables, docs/TECHNICAL_ARCHITECTURE.md). */
 export const CONTENT = {
   aircraft: { coucou: coucou as AircraftDef },
-  levels: { 'paris-reims': parisReims as Level },
+  levels: { 'paris-reims': parisReims as unknown as Level },
   tuning: tuning as Tuning,
   surfaces: surfaces as Record<SurfaceType, SurfaceProps>,
   landing: landing as LandingThresholds,

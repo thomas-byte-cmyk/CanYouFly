@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 import { CONTENT } from '../../sim/content';
 import { FIXED_DT } from '../../sim/flight';
+import type { LandingGrade } from '../../sim/landing';
+import { moverPos } from '../../sim/world';
 import { type FlightResult, FlightSession } from '../../sim/session';
 import { PlaneView } from '../render/plane';
-import { drawWorld } from '../render/world';
-import { C, PX } from '../style';
+import { drawMover, drawWorld } from '../render/world';
+import { C, CSS, PX, textStyle } from '../style';
 import type { BackgroundScene } from './BackgroundScene';
 import type { HudScene } from './HudScene';
 
@@ -15,6 +17,21 @@ interface Particle {
   vr: number;
   life: number;
 }
+
+const OUTCOME_COLOR: Record<LandingGrade, number> = {
+  PERFECT: 0x4caf50,
+  GOOD: 0x4aa3df,
+  ROUGH: 0xf2994a,
+  CRASH: 0xd9573b,
+  WATER: 0x2f7fb8,
+};
+const OUTCOME_LABEL: Record<LandingGrade, string> = {
+  PERFECT: 'PARFAIT',
+  GOOD: 'BON',
+  ROUGH: 'BRUTAL',
+  CRASH: 'CRASH !',
+  WATER: 'PLOUF !',
+};
 
 /** Progression conservée pendant la session de jeu (la sauvegarde arrive avec l'issue #15). */
 export const sessionProgress = { boulons: 0, bestStars: 0, flights: 0 };
@@ -28,6 +45,10 @@ export class FlightScene extends Phaser.Scene {
   private trajectory!: Phaser.GameObjects.Graphics;
   private rings: Phaser.GameObjects.Graphics[] = [];
   private updrafts: Phaser.GameObjects.Graphics[] = [];
+  private bolts: Phaser.GameObjects.Graphics[] = [];
+  private movers: Phaser.GameObjects.Container[] = [];
+  private shadow!: Phaser.GameObjects.Ellipse;
+  private outcomeText!: Phaser.GameObjects.Text;
   private particles: Particle[] = [];
   private acc = 0;
   private zoom = 1.2;
@@ -61,7 +82,11 @@ export class FlightScene extends Phaser.Scene {
     const world = drawWorld(this, level);
     this.rings = world.rings;
     this.updrafts = world.updrafts;
+    this.bolts = world.bolts;
+    this.movers = level.movers.map((m) => drawMover(this, m));
+    this.shadow = this.add.ellipse(0, -4, 90, 14, C.ink, 0.45);
     this.trajectory = this.add.graphics();
+    this.outcomeText = this.add.text(0, 0, '', textStyle(22, CSS.white, { stroke: CSS.ink, strokeThickness: 6 })).setOrigin(0.5, 1);
     this.plane = new PlaneView(this);
 
     const cam = this.cameras.main;
@@ -124,6 +149,17 @@ export class FlightScene extends Phaser.Scene {
     this.shake = st.stalled ? 1.5 : Math.max(0, this.shake - delta * 0.01);
     this.plane.update(st, s.throttle, st.fuel > 0 && !this.ended, delta, this.shake);
 
+    // Ombre au sol : indique la hauteur (plus l'avion est bas, plus elle est nette).
+    const alt = Math.max(0, s.altitude);
+    const surfaceIsWater = s.env.surfaceAt(st.x) === 'water';
+    this.shadow.setPosition(st.x * PX, surfaceIsWater ? 4 : -4);
+    this.shadow.setScale(Math.max(0.35, 1 / (1 + alt / 40)), 1);
+    this.shadow.setAlpha(Math.max(0.12, 0.55 - alt / 120));
+    this.shadow.setVisible(!this.ended || s.result?.grade !== 'WATER');
+
+    // Obstacles vivants (même horloge que la simulation : trajectoires prévisibles).
+    this.cfgMovers(st.time);
+
     this.updateTrajectory();
     this.updateParticles(delta / 1000);
     this.updateCamera(delta / 1000);
@@ -142,11 +178,29 @@ export class FlightScene extends Phaser.Scene {
   private onEvent(e: ReturnType<FlightSession['drainEvents']>[number]): void {
     switch (e.type) {
       case 'ring': {
-        this.hud.showFlash('Anneau ! +3 Boulons');
+        this.hud.showFlash(e.boost ? 'BOOST ! +3 Boulons' : 'Anneau ! +3 Boulons');
         const r = this.rings[e.index];
-        this.tweens.add({ targets: r, alpha: 0, scale: 1.2, duration: 400 });
+        this.tweens.add({ targets: r, alpha: 0, duration: 400 });
+        if (e.boost) this.cameras.main.shake(200, 0.004);
         break;
       }
+      case 'chain':
+        this.hud.showFlash('Série complète ! +10 Boulons', 2000);
+        break;
+      case 'bolt': {
+        const b = this.bolts[e.index];
+        this.tweens.add({ targets: b, alpha: 0, y: b.y - 30, duration: 300 });
+        break;
+      }
+      case 'bird':
+        this.hud.showFlash('Oiseaux ! Pip est couvert de plumes', 1800);
+        this.feathers(this.session.state.x, this.session.state.y);
+        this.plane.setExpression('scared');
+        break;
+      case 'balloon':
+        this.hud.showFlash('BOING ! Pardon, madame la montgolfière', 1800);
+        this.cameras.main.shake(200, 0.006);
+        break;
       case 'fuel-empty':
         this.hud.showFlash('Panne sèche ! Plane jusqu\'à une zone', 2500);
         break;
@@ -193,21 +247,43 @@ export class FlightScene extends Phaser.Scene {
     });
   }
 
+  private cfgMovers(t: number): void {
+    this.session.cfg.level.movers.forEach((m, i) => {
+      const p = moverPos(m, t);
+      const c = this.movers[i];
+      c.setPosition(p.x * PX, -p.y * PX);
+      if (m.type === 'birds') c.setScale(1, 1 + Math.sin(t * 12) * 0.25);
+    });
+  }
+
+  /**
+   * Trajectoire prévue en approche, avec le résultat annoncé au point d'impact
+   * (« où viser » : retour de playtest v0.1).
+   */
   private updateTrajectory(): void {
     const s = this.session;
     const g = this.trajectory;
     g.clear();
+    this.outcomeText.setText('');
     if (this.ended || s.phase !== 'flying' || !s.inApproach) return;
-    const pts = s.predict(3);
+    const { points, outcome } = s.predict(4);
     g.fillStyle(C.white, 0.9);
-    for (const p of pts) g.fillCircle(p.x * PX, -p.y * PX, 4);
-    const last = pts[pts.length - 1];
-    if (last && last.y <= 0.5) {
-      const surf = s.env.surfaceAt(last.x);
-      const props = s.env.surfaceProps(surf);
-      const color = surf === 'water' ? C.blue : props.landable ? C.green : C.red;
-      g.lineStyle(4, C.ink, 1).fillStyle(color, 1);
-      g.fillCircle(last.x * PX, -last.y * PX, 10).strokeCircle(last.x * PX, -last.y * PX, 10);
+    for (const p of points) g.fillCircle(p.x * PX, -p.y * PX, 4);
+    if (!outcome) return;
+    const last = points[points.length - 1];
+    const color = OUTCOME_COLOR[outcome.grade];
+    g.lineStyle(4, C.ink, 1).fillStyle(color, 1);
+    g.fillCircle(last.x * PX, -last.y * PX, 11).strokeCircle(last.x * PX, -last.y * PX, 11);
+    this.outcomeText
+      .setPosition(last.x * PX, -last.y * PX - 18)
+      .setText(OUTCOME_LABEL[outcome.grade])
+      .setColor(`#${color.toString(16).padStart(6, '0')}`);
+  }
+
+  private feathers(x: number, y: number): void {
+    for (let i = 0; i < 12; i++) {
+      const f = this.add.ellipse(x * PX, -y * PX, 10, 4, C.white, 1).setStrokeStyle(1, C.ink);
+      this.particles.push({ obj: f, vx: Phaser.Math.Between(-120, 120), vy: Phaser.Math.Between(-200, -40), vr: Phaser.Math.FloatBetween(-6, 6), life: 1.5 });
     }
   }
 
@@ -269,7 +345,7 @@ export class FlightScene extends Phaser.Scene {
 
   private updateParticles(dt: number): void {
     for (const p of this.particles) {
-      p.vy += 700 * dt;
+      p.vy += (p.obj.type === 'Ellipse' ? 150 : 700) * dt;
       p.obj.x += p.vx * dt;
       p.obj.y = Math.min(p.obj.y + p.vy * dt, 0);
       p.obj.rotation += p.vr * dt;

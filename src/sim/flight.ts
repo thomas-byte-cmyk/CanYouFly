@@ -40,7 +40,7 @@ export function stepPhysics(
   const agg = computeAggregates(def, s.fuel, t);
   const M = agg.mass;
 
-  const wind = env.windAt(s.x, s.y);
+  const wind = env.windAt(s.x, s.y, s.time);
   const vax = s.vx - wind.x;
   const vay = s.vy - wind.y;
   const V = Math.hypot(vax, vay);
@@ -78,6 +78,16 @@ export function stepPhysics(
       alphaWing = alpha;
       stalled = Math.abs(alpha) > stall && moving && V > 5;
     }
+  }
+
+  // Effet de sol : près du sol, la portance augmente et la descente est amortie (aide à l'arrondi).
+  const height = s.y - def.gear.height - env.groundHeightAt(s.x);
+  const ge = t.groundEffect;
+  if (moving && height < ge.height && height > -0.5) {
+    const k = (1 - Math.max(0, height) / ge.height) ** 2;
+    fx += fx * ge.liftBoost * k;
+    fy += fy * ge.liftBoost * k;
+    if (s.vy < 0) fy += M * ge.cushion * -s.vy * k;
   }
 
   // Traînée, opposée au vent relatif.

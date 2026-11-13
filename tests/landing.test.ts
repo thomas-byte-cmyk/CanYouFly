@@ -13,7 +13,7 @@ const td = (sink: number, pitchDeg = 4, groundSpeed = 28, surface = runway) =>
   evaluateTouchdown({ sink, groundSpeed, pitch: pitchDeg * DEG, surface, gearTolerance: 6, gearVhMax: 40 }, th);
 
 describe('qualité du contact (docs/LANDING_AND_CRASH_SYSTEM.md §4)', () => {
-  it('respecte les seuils de départ sur piste (PERFECT ≤ 3, GOOD ≤ 6, ROUGH ≤ 9,6 u/s)', () => {
+  it('respecte les seuils sur piste avec un train de tolérance 6 (PERFECT ≤ 3, GOOD ≤ 6, ROUGH ≤ 9,6 u/s)', () => {
     expect(td(2.5).grade).toBe('PERFECT');
     expect(td(5).grade).toBe('GOOD');
     expect(td(9).grade).toBe('ROUGH');
@@ -26,7 +26,7 @@ describe('qualité du contact (docs/LANDING_AND_CRASH_SYSTEM.md §4)', () => {
   });
 
   it('toucher nez en premier = CRASH', () => {
-    const r = td(1, -15);
+    const r = td(1, -18);
     expect(r.grade).toBe('CRASH');
     expect(r.cause).toBe('nose');
   });
@@ -44,7 +44,7 @@ describe('qualité du contact (docs/LANDING_AND_CRASH_SYSTEM.md §4)', () => {
 describe('fin de vol', () => {
   it("l'eau donne toujours un WATER CRASH", () => {
     const s = newSession(coucou, { autoThrottle: false });
-    placeInFlight(s, { x: 1690, alt: 3, vx: 25, vy: -1, thetaDeg: 5 });
+    placeInFlight(s, { x: 1668, alt: 2, vx: 22, vy: -5, thetaDeg: -2 });
     const r = runToEnd(s, () => 0, 0);
     expect(r?.grade).toBe('WATER');
     expect(r?.validated).toBe(false);

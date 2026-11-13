@@ -12,6 +12,8 @@ export const QUALITY_BONUS: Record<LandingGrade, number> = {
 
 export const OFF_ZONE_FACTOR = 0.3;
 export const RING_VALUE = 3;
+export const BOLT_VALUE = 1;
+export const CHAIN_BONUS = 10;
 export const FLOOR = 10;
 
 export interface RewardInput {
@@ -21,6 +23,8 @@ export interface RewardInput {
   landed: boolean;
   zone?: LandingZone;
   rings: number;
+  bolts?: number;
+  chains?: number;
   validated: boolean;
   firstArrival: boolean;
 }
@@ -41,7 +45,7 @@ export function computeReward(i: RewardInput): Reward {
   const distance = Math.round(0.6 * R * progression);
   const factor = i.zone ? i.zone.zoneFactor : OFF_ZONE_FACTOR;
   const landing = i.landed ? Math.round(R * QUALITY_BONUS[i.grade] * factor) : 0;
-  const rings = i.rings * RING_VALUE;
+  const rings = i.rings * RING_VALUE + (i.bolts ?? 0) * BOLT_VALUE + (i.chains ?? 0) * CHAIN_BONUS;
   const firstArrival = i.validated && i.firstArrival ? R : 0;
   let total = distance + landing + rings + firstArrival;
   if (progression >= 0.05) total = Math.max(FLOOR, total);

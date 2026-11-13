@@ -9,6 +9,11 @@
   "approachSpeed": 28,
   "flapsDrag": 0.12,
   "pitchRampTime": 0.15,
+  "groundEffect": {
+    "height": 6,
+    "liftBoost": 0.15,
+    "cushion": 1.6
+  },
   "assist": {
     "extraDamping": 0.8,
     "alphaHoldGain": 0.6
