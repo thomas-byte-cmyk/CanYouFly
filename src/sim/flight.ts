@@ -114,19 +114,42 @@ export function stepPhysics(
   const trim = s.onGround ? 0 : ac.trimU;
   mz += (pitchCmd + trim) * def.pitch.authority * qEff;
   mz -= def.pitch.damping * s.omega * qEff;
+  let mzAssist = 0;
   if (ac.stabilize && !s.onGround) {
-    mz -= t.assist.extraDamping * def.pitch.damping * s.omega * qEff;
+    mzAssist -= t.assist.extraDamping * def.pitch.damping * s.omega * qEff;
     if (Math.abs(pitchCmd) < 0.05 && moving) {
       const wingInc = (def.surfaces.find((x) => x.id === 'wing')?.incidenceDeg ?? 0) * DEG;
       const target = ac.alphaTrim + wingInc;
-      mz += t.assist.alphaHoldGain * def.pitch.authority * (target - alphaWing) * qEff;
+      mzAssist += t.assist.alphaHoldGain * def.pitch.authority * (target - alphaWing) * qEff;
     }
   }
+  mz += mzAssist;
 
   // Intégration semi-implicite.
   s.vx += (fx / M) * dt;
   s.vy += (fy / M) * dt;
-  s.omega += (mz / agg.inertia) * dt;
+  if (ac.arcade) {
+    // Le moment aérodynamique (stabilité, défauts de construction) devient une « commande
+    // équivalente » ajoutée à celle du joueur : l'avion garde sa personnalité sans inertie.
+    const a = t.arcade;
+    const aeroOnly = mz - mzAssist - (pitchCmd + trim) * def.pitch.authority * qEff + def.pitch.damping * s.omega * qEff;
+    const natural = clamp((aeroOnly / (def.pitch.authority * qEff) + trim) * a.natural, -0.8, 0.8);
+    const speedK = clamp(V / 20, 0.35, 1);
+    const target = (pitchCmd + (s.onGround ? 0 : natural)) * a.pitchRateDeg * DEG * speedK;
+    s.omega += (target - s.omega) * Math.min(1, dt / a.response);
+    // Grip : la trajectoire suit le nez (moins de « glisse » vers le haut ou le bas).
+    if (!s.onGround && moving && !stalled) {
+      const ref = s.theta - ac.alphaTrim;
+      const nx = -Math.sin(ref);
+      const ny = Math.cos(ref);
+      const vperp = s.vx * nx + s.vy * ny;
+      const k = Math.min(1, a.grip * dt * clamp(V / 25, 0, 1));
+      s.vx -= vperp * nx * k;
+      s.vy -= vperp * ny * k;
+    }
+  } else {
+    s.omega += (mz / agg.inertia) * dt;
+  }
   s.theta = wrapPi(s.theta + s.omega * dt);
   s.x += s.vx * dt;
   s.y += s.vy * dt;
