@@ -3,7 +3,8 @@ import { CONTENT } from '../../sim/content';
 import { computeHandling } from '../../sim/handling';
 import { PlaneView } from '../render/plane';
 import { C, CSS, textStyle } from '../style';
-import { type FlightScene, selectedAircraft } from './FlightScene';
+import { withCargo } from '../../sim/cargo';
+import { currentOrder, game, openOrder, startFlight } from '../state';
 
 const STAT_LABELS: [keyof ReturnType<typeof computeHandling>['stats'], string][] = [
   ['vitesse', 'Vitesse'],
@@ -30,19 +31,23 @@ export class SelectScene extends Phaser.Scene {
     const W = this.scale.width;
     const H = this.scale.height;
     this.add.rectangle(0, 0, W, H, C.ink, 0.6).setOrigin(0);
-    this.add.text(W / 2, 30, 'CHOISIS TON AVION', textStyle(44, CSS.cream, { stroke: CSS.ink, strokeThickness: 8 })).setOrigin(0.5, 0);
-    this.add.text(W / 2, 86, 'Chaque avion se pilote différemment : les barres viennent de ses pièces.', textStyle(20, CSS.cream)).setOrigin(0.5, 0);
+    const pkg = CONTENT.packages[currentOrder().packageId];
+    this.add.text(W / 2, 24, 'ADAPTE TON AVION AU COLIS', textStyle(42, CSS.cream, { stroke: CSS.ink, strokeThickness: 8 })).setOrigin(0.5, 0);
+    this.add.text(W / 2, 80, `Chargé : ${pkg.icon} ${pkg.name}${pkg.tags.length ? ` (${pkg.tags.join(', ')})` : ''} — les barres tiennent compte du colis.`, textStyle(20, CSS.cream)).setOrigin(0.5, 0);
+    const back = this.add.text(30, 26, '◀ Commande', textStyle(22, CSS.cream, { backgroundColor: '#3a9e9a', padding: { x: 12, y: 6 } })).setInteractive({ useHandCursor: true });
+    back.on('pointerdown', () => openOrder(this));
 
     const ids = ['albatros', 'coucou', 'fusee'];
     const difficulty: Record<string, string> = { albatros: 'Facile', coucou: 'Moyen', fusee: 'Difficile' };
     ids.forEach((id, i) => {
       const def = CONTENT.aircraft[id];
-      const h = computeHandling(def, CONTENT.tuning);
+      // Les barres sont calculées AVEC le colis à bord : un même avion change selon la commande.
+      const h = computeHandling(withCargo(def, pkg), CONTENT.tuning);
       const cx = W / 2 + (i - 1) * 410;
       const top = 130;
       const card = this.add.container(cx, top);
       const g = this.add.graphics();
-      const selected = selectedAircraft.id === id;
+      const selected = game.aircraftId === id;
       g.fillStyle(C.cream, 1).fillRoundedRect(-190, 0, 380, 560, 22);
       g.lineStyle(selected ? 8 : 4, selected ? C.orange : C.ink, 1).strokeRoundedRect(-190, 0, 380, 560, 22);
       card.add(g);
@@ -68,14 +73,11 @@ export class SelectScene extends Phaser.Scene {
         card.add(bg);
       });
       const btn = this.add
-        .text(0, 498, selected ? 'VOLER  ✈' : 'CHOISIR', textStyle(26, CSS.cream, { backgroundColor: selected ? '#d9573b' : '#3a9e9a', padding: { x: 28, y: 8 } }))
+        .text(0, 498, selected ? 'LIVRER  ✈' : 'CHOISIR', textStyle(26, CSS.cream, { backgroundColor: selected ? '#d9573b' : '#3a9e9a', padding: { x: 28, y: 8 } }))
         .setOrigin(0.5, 0)
         .setInteractive({ useHandCursor: true });
       card.add(btn);
-      const pick = () => {
-        selectedAircraft.id = id;
-        (this.scene.get('flight') as FlightScene).restart();
-      };
+      const pick = () => this.choose(id);
       btn.on('pointerdown', pick);
       g.setInteractive(new Phaser.Geom.Rectangle(-190, 0, 380, 560), Phaser.Geom.Rectangle.Contains).on('pointerdown', pick);
     });
@@ -84,12 +86,12 @@ export class SelectScene extends Phaser.Scene {
     kb.once('keydown-ONE', () => this.choose('albatros'));
     kb.once('keydown-TWO', () => this.choose('coucou'));
     kb.once('keydown-THREE', () => this.choose('fusee'));
-    kb.once('keydown-ENTER', () => this.choose(selectedAircraft.id));
+    kb.once('keydown-ENTER', () => this.choose(game.aircraftId));
   }
 
   private choose(id: string): void {
-    selectedAircraft.id = id;
-    (this.scene.get('flight') as FlightScene).restart();
+    game.aircraftId = id;
+    startFlight(this);
   }
 }
 

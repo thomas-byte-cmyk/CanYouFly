@@ -1,0 +1,246 @@
+{
+ "id": "cocotte",
+ "from": "Entrepôt LivrÎle",
+ "to": "Île Cocotte",
+ "kmPerUnit": 0.012,
+ "reward": 70,
+ "startX": 10,
+ "destinationX": 1880,
+ "approachStartX": 1430,
+ "worldStart": -300,
+ "worldEnd": 2700,
+ "ground": [
+  {
+   "x0": -300,
+   "x1": -40,
+   "surface": "sand"
+  },
+  {
+   "x0": -40,
+   "x1": 300,
+   "surface": "dirt"
+  },
+  {
+   "x0": 300,
+   "x1": 330,
+   "surface": "sand"
+  },
+  {
+   "x0": 330,
+   "x1": 900,
+   "surface": "water"
+  },
+  {
+   "x0": 900,
+   "x1": 1010,
+   "surface": "sand"
+  },
+  {
+   "x0": 1010,
+   "x1": 1700,
+   "surface": "water"
+  },
+  {
+   "x0": 1700,
+   "x1": 1740,
+   "surface": "sand"
+  },
+  {
+   "x0": 1740,
+   "x1": 1900,
+   "surface": "sand"
+  },
+  {
+   "x0": 1900,
+   "x1": 2060,
+   "surface": "grass"
+  },
+  {
+   "x0": 2060,
+   "x1": 2100,
+   "surface": "sand"
+  },
+  {
+   "x0": 2100,
+   "x1": 2700,
+   "surface": "water"
+  }
+ ],
+ "zones": [
+  {
+   "id": "caillou",
+   "name": "Îlot Caillou (secours)",
+   "x0": 905,
+   "x1": 1000,
+   "kind": "safe",
+   "zoneFactor": 0.3,
+   "arrival": false,
+   "difficulty": 1
+  },
+  {
+   "id": "plage-cocotte",
+   "name": "Plage de Cocotte",
+   "x0": 1740,
+   "x1": 1898,
+   "kind": "standard",
+   "zoneFactor": 1.0,
+   "arrival": true,
+   "difficulty": 2
+  },
+  {
+   "id": "pre-cocotte",
+   "name": "Pré aux poules",
+   "x0": 1902,
+   "x1": 2040,
+   "kind": "bold",
+   "zoneFactor": 1.2,
+   "arrival": true,
+   "difficulty": 2
+  }
+ ],
+ "obstacles": [
+  {
+   "type": "hut",
+   "x": -120,
+   "w": 40,
+   "h": 16
+  },
+  {
+   "type": "palm",
+   "x": -170,
+   "w": 8,
+   "h": 18
+  },
+  {
+   "type": "palm",
+   "x": -60,
+   "w": 8,
+   "h": 15
+  },
+  {
+   "type": "palm",
+   "x": 1002,
+   "w": 7,
+   "h": 12
+  },
+  {
+   "type": "palm",
+   "x": 1722,
+   "w": 7,
+   "h": 10
+  },
+  {
+   "type": "hut",
+   "x": 2046,
+   "w": 12,
+   "h": 8
+  },
+  {
+   "type": "palm",
+   "x": 2064,
+   "w": 8,
+   "h": 16
+  },
+  {
+   "type": "palm",
+   "x": 2082,
+   "w": 8,
+   "h": 13
+  }
+ ],
+ "wind": [
+  {
+   "x0": 1050,
+   "x1": 1350,
+   "wx": 7,
+   "wy": 0,
+   "label": "Alizé →"
+  }
+ ],
+ "updrafts": [
+  {
+   "x0": 930,
+   "x1": 990,
+   "strength": 4,
+   "top": 110
+  }
+ ],
+ "rings": [
+  {
+   "x": 560,
+   "y": 55,
+   "r": 9,
+   "chain": "A"
+  },
+  {
+   "x": 620,
+   "y": 62,
+   "r": 9,
+   "chain": "A"
+  },
+  {
+   "x": 680,
+   "y": 66,
+   "r": 9,
+   "chain": "A",
+   "kind": "boost"
+  },
+  {
+   "x": 1250,
+   "y": 70,
+   "r": 9
+  }
+ ],
+ "bolts": [
+  {
+   "x": 1100,
+   "y": 51
+  },
+  {
+   "x": 1116,
+   "y": 54
+  },
+  {
+   "x": 1132,
+   "y": 57
+  },
+  {
+   "x": 1148,
+   "y": 60
+  },
+  {
+   "x": 1164,
+   "y": 57
+  },
+  {
+   "x": 1180,
+   "y": 54
+  },
+  {
+   "x": 1196,
+   "y": 51
+  }
+ ],
+ "movers": [
+  {
+   "type": "birds",
+   "x0": 1500,
+   "y0": 55,
+   "vx": -4,
+   "amp": 4,
+   "period": 2.6,
+   "r": 6
+  }
+ ],
+ "landmarks": [
+  {
+   "type": "sign",
+   "x": 250,
+   "label": "LivrÎle"
+  },
+  {
+   "type": "windsock",
+   "x": 1745
+  }
+ ]
+}

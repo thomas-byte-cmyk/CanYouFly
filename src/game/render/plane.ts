@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { type PackageDef, cargoX } from '../../sim/cargo';
 import type { AircraftDef, FlightState } from '../../sim/types';
 import { C, PX } from '../style';
 import { type Expression, drawPilot } from './pilot';
@@ -14,9 +15,12 @@ export class PlaneView {
   private propPhase = 0;
   private expression: Expression | null = null;
   private wobble = 0;
+  private cargoView?: Phaser.GameObjects.Container;
+  private readonly cargo?: PackageDef;
 
-  constructor(scene: Phaser.Scene, def?: AircraftDef) {
+  constructor(scene: Phaser.Scene, def?: AircraftDef, cargo?: PackageDef) {
     this.root = scene.add.container(0, 0);
+    this.cargo = cargo;
     const look = def?.look;
     const hex = (v: string | undefined, d: number) => (v ? parseInt(v, 16) : d);
     const bodyColor = hex(look?.body, C.paper);
@@ -79,6 +83,16 @@ export class PlaneView {
     body.lineStyle(2, C.ink, 1).strokeCircle(P(4.45, 0.08).x, P(4.45, 0.08).y, 0.32 * PX);
 
     this.root.add([this.pilot, body, this.prop]);
+
+    // Colis visible dans la soute (caisse en bois + pictogramme), à sa vraie position.
+    if (cargo) {
+      const crate = scene.add.graphics();
+      crate.fillStyle(0xc89b5e, 1).fillRoundedRect(-13, -13, 26, 22, 4).lineStyle(2.5, C.ink, 1).strokeRoundedRect(-13, -13, 26, 22, 4);
+      crate.lineStyle(1.5, 0x8a6a3a, 1).lineBetween(-13, -2, 13, -2);
+      const icon = scene.add.text(0, -3, cargo.icon, { fontSize: '16px' }).setOrigin(0.5);
+      this.cargoView = scene.add.container(this.cargoPx(cargo.slotX), -1.15 * PX, [crate, icon]);
+      this.root.addAt(this.cargoView, 1);
+    }
     this.setExpression('calm');
   }
 
@@ -95,6 +109,10 @@ export class PlaneView {
     this.wobble += dtMs * 0.03;
     const jitter = shake > 0 ? Math.sin(this.wobble * 3.1) * shake : 0;
     this.root.setPosition(s.x * PX, -s.y * PX + jitter);
+    if (this.cargo?.shifting && this.cargoView) {
+      this.cargoView.x = this.cargoPx(cargoX(this.cargo, s.time));
+      this.cargoView.angle = Math.sin(s.time * 9) * 8;
+    }
     this.root.setRotation(-s.theta);
 
     const spin = engineOn ? 0.25 + throttle * 0.9 : s.airspeed > 5 ? 0.06 : 0;
@@ -109,6 +127,11 @@ export class PlaneView {
     if (spin > 0.3) {
       this.prop.fillStyle(C.white, 0.18).fillEllipse(hub.x, hub.y, 0.5 * PX, len * 2);
     }
+  }
+
+  /** Le colis est dessiné derrière le cockpit, décalé selon sa position dans l'avion. */
+  private cargoPx(slotX: number): number {
+    return (slotX - 1.9) * PX;
   }
 
   setVisible(v: boolean): void {

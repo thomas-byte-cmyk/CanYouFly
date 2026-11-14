@@ -22,7 +22,7 @@ export interface LandingZone {
   difficulty: 1 | 2 | 3;
 }
 
-export type ObstacleType = 'tree' | 'fence' | 'lamppost' | 'building' | 'cathedral' | 'barn';
+export type ObstacleType = 'tree' | 'fence' | 'lamppost' | 'building' | 'cathedral' | 'barn' | 'palm' | 'hut';
 
 export interface Obstacle {
   type: ObstacleType;

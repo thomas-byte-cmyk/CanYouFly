@@ -2,10 +2,10 @@
 
 > **Pip, « partenaire indépendant » de la société LivrÎle, livre des colis absurdes aux habitants d'un archipel tropical. Chaque colis oblige à adapter l'avion… puis à réussir l'atterrissage.**
 >
-> *Pivot du 14/11/2026 : voir [`docs/PIVOT_LIVREUR_TROPICAL.md`](docs/PIVOT_LIVREUR_TROPICAL.md). La version jouable en ligne (v0.5) est encore l'ancienne étape Paris → Reims.*
+> *Pivot du 14/11/2026 : voir [`docs/PIVOT_LIVREUR_TROPICAL.md`](docs/PIVOT_LIVREUR_TROPICAL.md). Version jouable : v0.6 « Première livraison » (2 îles, 3 colis).*
 > Jeu d'arcade 2D cartoon en HTML5, destiné à la plateforme [Poki](https://poki.com).
 
-**État actuel : v0.5 jouable sur https://thomas-byte-cmyk.github.io/CanYouFly/ — pivot validé, prochaine étape : v0.6 « Première livraison ».**
+**État actuel : v0.6 jouable sur https://thomas-byte-cmyk.github.io/CanYouFly/ — prochaine étape : go / no-go du pivot.**
 👉 Commencez par lire le **[Dossier de conception](docs/DESIGN_DOSSIER.md)**, puis **[PROJECT_STATUS.md](PROJECT_STATUS.md)**.
 
 ## Le jeu en 30 secondes

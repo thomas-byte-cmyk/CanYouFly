@@ -88,7 +88,9 @@ export type SurfaceType =
   | 'park'
   | 'water'
   | 'forest'
-  | 'city';
+  | 'city'
+  | 'sand'
+  | 'dirt';
 
 export interface SurfaceProps {
   /** Tolérance d'atterrissage (f_surface) ; 0 = non atterrissable. */

@@ -4,9 +4,10 @@ import { FlightScene } from './game/scenes/FlightScene';
 import { HudScene } from './game/scenes/HudScene';
 import { PauseScene } from './game/scenes/PauseScene';
 import { ResultsScene } from './game/scenes/ResultsScene';
+import { OrderScene } from './game/scenes/OrderScene';
 import { SelectScene } from './game/scenes/SelectScene';
 
-// Jalon « Sensation de vol » : on démarre directement sur la piste (décision D2).
+// Pivot D17 : la partie commence par la lecture de la commande (écran court, gros bouton « LIVRER »).
 const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
@@ -19,7 +20,7 @@ const game = new Phaser.Game({
   fps: { smoothStep: false },
   render: { antialias: true },
   disableContextMenu: true,
-  scene: [BackgroundScene, FlightScene, HudScene, ResultsScene, PauseScene, SelectScene],
+  scene: [BackgroundScene, FlightScene, HudScene, ResultsScene, PauseScene, SelectScene, OrderScene],
 });
 
 // Empêche le défilement de la page par les touches de jeu (exigence Poki).

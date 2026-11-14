@@ -1,4 +1,6 @@
 import { clamp, computeAggregates, computeTrim } from './aero';
+import { type PackageDef, cargoX, withCargo } from './cargo';
+import { type Delivery, computeDelivery } from './delivery';
 import { FIXED_DT, bodyPoint, createState, stepPhysics } from './flight';
 import { type Handling, computeHandling } from './handling';
 import { type LandingGrade, type LandingThresholds, type TouchdownResult, evaluateTouchdown, worstGrade } from './landing';
@@ -67,6 +69,8 @@ export interface FlightResult {
   fuelEmpty: boolean;
   reward: Reward;
   pilot: PilotState;
+  /** Livraison (si un colis est à bord). */
+  delivery?: Delivery;
 }
 
 export interface SessionConfig {
@@ -80,6 +84,8 @@ export interface SessionConfig {
   firstArrival: boolean;
   /** Pilotage arcade (recommandé en jeu). */
   arcade?: boolean;
+  /** Colis à livrer (pivot D17) : ajouté à l'avion (masse, centre de gravité, traînée, fragilité). */
+  cargo?: PackageDef;
 }
 
 const PILOT_BY_GRADE: Record<LandingGrade, PilotState> = {
@@ -122,12 +128,16 @@ export class FlightSession {
   private fuelEmptyNotified = false;
   private events: SessionEvent[] = [];
 
-  constructor(readonly cfg: SessionConfig) {
-    this.env = createEnv(cfg.level, cfg.tuning, cfg.surfaces);
-    this.handling = computeHandling(cfg.def, cfg.tuning);
-    const trim = computeTrim(cfg.def, cfg.def.fuel.capacity, cfg.tuning, this.handling.cruiseSpeed);
+  readonly cfg: SessionConfig;
+
+  constructor(cfg: SessionConfig) {
+    // Le colis est chargé dans une copie de l'avion : c'est elle qui vole et dont on calcule les barres.
+    this.cfg = cfg.cargo ? { ...cfg, def: withCargo(cfg.def, cfg.cargo) } : cfg;
+    this.env = createEnv(this.cfg.level, this.cfg.tuning, this.cfg.surfaces);
+    this.handling = computeHandling(this.cfg.def, this.cfg.tuning);
+    const trim = computeTrim(this.cfg.def, this.cfg.def.fuel.capacity, this.cfg.tuning, this.handling.cruiseSpeed);
     this.runtime = {
-      def: cfg.def,
+      def: this.cfg.def,
       trimU: trim.trimU,
       alphaTrim: trim.alphaTrim,
       stabilize: cfg.stabilize,
@@ -135,11 +145,11 @@ export class FlightSession {
       arcade: cfg.arcade ?? false,
       pitchRateScale: this.handling.pitchRateScale,
     };
-    this.state = createState(cfg.level.startX, 0, cfg.def.gear.height, cfg.def.fuel.capacity);
+    this.state = createState(this.cfg.level.startX, 0, this.cfg.def.gear.height, this.cfg.def.fuel.capacity);
     this.autoThrottle = cfg.autoThrottle;
-    this.ringsTaken = cfg.level.rings.map(() => false);
-    this.boltsTaken = cfg.level.bolts.map(() => false);
-    this.moverCooldown = cfg.level.movers.map(() => 0);
+    this.ringsTaken = this.cfg.level.rings.map(() => false);
+    this.boltsTaken = this.cfg.level.bolts.map(() => false);
+    this.moverCooldown = this.cfg.level.movers.map(() => 0);
   }
 
   get aggregates() {
@@ -164,6 +174,11 @@ export class FlightSession {
 
     // Rampe de la commande de tangage (évite les à-coups).
     const rate = dt / t.pitchRampTime;
+    // Colis qui bouge (poules) : le centre de gravité se déplace en vol.
+    if (this.cfg.cargo?.shifting && this.phase !== 'ground') {
+      const m = this.cfg.def.masses.find((x) => x.id === 'cargo');
+      if (m) m.x = cargoX(this.cfg.cargo, s.time);
+    }
     this.pressing = !!input.press;
     const wanted = input.press !== undefined ? this.oneButtonPitch(input.press, !!input.dive) : input.pitch;
     const target = clamp(wanted, -1, 1);
@@ -458,6 +473,16 @@ export class FlightSession {
       fuelEmpty: s.fuel <= 0,
       reward,
       pilot: PILOT_BY_GRADE[grade],
+      delivery: this.cfg.cargo
+        ? computeDelivery({
+            pkg: this.cfg.cargo,
+            grade,
+            validated,
+            progression: reward.progression,
+            bonus: reward.rings,
+            seed: Math.floor(s.time * 7),
+          })
+        : undefined,
     };
     this.events.push({ type: 'end', result: this.result });
   }

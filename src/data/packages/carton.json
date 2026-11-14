@@ -1,0 +1,33 @@
+{
+  "id": "carton",
+  "name": "Carton « NE PAS SECOUER »",
+  "icon": "📦",
+  "mass": 20,
+  "slotX": 0.3,
+  "drag": 0,
+  "fragility": 1,
+  "price": 40,
+  "tip": 10,
+  "tags": [],
+  "reviews": {
+    "parfait": [
+      "Parfait. Personne n'a jamais su ce qu'il y avait dedans.",
+      "Livraison test réussie. On garde le carton, il est trop bien."
+    ],
+    "intact": [
+      "Reçu. Le carton fait un petit bruit, mais il en faisait déjà un avant."
+    ],
+    "cabosse": [
+      "Carton un peu écrasé. On dira que c'est du design."
+    ],
+    "miettes": [
+      "Le carton est arrivé en plusieurs cartons."
+    ],
+    "plouf": [
+      "Le colis flotte. Au moins, on sait qu'il était étanche."
+    ],
+    "refuse": [
+      "Le colis n'est pas arrivé au Dépôt. Le Dépôt est pourtant très grand."
+    ]
+  }
+}

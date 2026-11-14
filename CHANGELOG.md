@@ -4,6 +4,15 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+## [0.6.0] — 14/11/2026 — « Première livraison » (pivot D17)
+- **Boucle livreur** : écran de commande (colis, contraintes en pictos, message du client) → adapter l'avion au colis → vol → livraison en atterrissant → écran « Note client » (1–5 ★, avis, état du colis, paiement, pourboire, phrase de Pip) → commande suivante.
+- **2 îles** : Île du Dépôt (tutoriel, piste en terre) et Île Cocotte (plage courte + pré aux poules, îlot de secours, alizé, oiseaux) ; décor tropical (sable, palmiers, cases, archipel à l'horizon).
+- **3 colis** (`src/data/packages/`) : carton (aucune contrainte), œufs (fragiles : tolérance ×0,5), poules (masse qui bouge en vol : le centre de gravité oscille).
+- **Le colis modifie l'avion** (`src/sim/cargo.ts`) : masse, centre de gravité, traînée, fragilité ; les barres des 3 avions sont recalculées avec le colis à bord. Le colis est visible dans l'avion (les poules gigotent).
+- **Livraison** (`src/sim/delivery.ts`, D18) : livré intact / cabossé (−30 %) / en miettes (−70 %), perdu en mer (échec + consolation), refusé hors zone.
+- **PLOUF** : le colis flotte, Pip : « Le colis est imperméable. Moi, non. »
+- 13 nouveaux tests (52) : chaque commande livrable intacte avec au moins un avion ; pour les œufs, l'Albatros fait mieux que la Fusée. Outil `scripts/delivery-check.ts`.
+
 ### 14/11/2026 — Pivot « livreur de colis aux îles » (étape A, sans code)
 - Nouveau document `docs/PIVOT_LIVREUR_TROPICAL.md` : vision, ce qu'on garde, ce qu'on jette, réutilisation du code, colis et contraintes, 9 îles, direction artistique, ton, risques, impact Poki et pubs, 10 exemples de commandes.
 - Décisions D17 à D20 ; D6 remplacée, D5 adaptée, D8 réinterprétée, D7 et D12 maintenues.

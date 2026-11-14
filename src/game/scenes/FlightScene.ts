@@ -5,6 +5,7 @@ import type { LandingGrade } from '../../sim/landing';
 import { moverPos } from '../../sim/world';
 import { type FlightResult, FlightSession } from '../../sim/session';
 import { PlaneView } from '../render/plane';
+import { currentOrder, game } from '../state';
 import { drawMover, drawWorld } from '../render/world';
 import { C, CSS, PX, textStyle } from '../style';
 import type { BackgroundScene } from './BackgroundScene';
@@ -33,11 +34,6 @@ const OUTCOME_LABEL: Record<LandingGrade, string> = {
   WATER: 'PLOUF !',
 };
 
-/** Avion choisi (écran de sélection ; le hangar le remplacera en Phase 2b). */
-export const selectedAircraft = { id: 'coucou' };
-
-/** Progression conservée pendant la session de jeu (la sauvegarde arrive avec l'issue #15). */
-export const sessionProgress = { boulons: 0, bestStars: 0, flights: 0 };
 
 /** Scène de vol : simulation à pas fixe, caméra, effets. */
 export class FlightScene extends Phaser.Scene {
@@ -70,9 +66,12 @@ export class FlightScene extends Phaser.Scene {
     this.acc = 0;
     this.hintStage = 0;
     this.particles = [];
-    const level = CONTENT.levels['paris-reims'];
+    const order = currentOrder();
+    const level = CONTENT.levels[order.levelId];
+    const cargo = CONTENT.packages[order.packageId];
     this.session = new FlightSession({
-      def: CONTENT.aircraft[selectedAircraft.id] ?? CONTENT.aircraft.coucou,
+      def: CONTENT.aircraft[game.aircraftId] ?? CONTENT.aircraft.coucou,
+      cargo,
       level,
       tuning: CONTENT.tuning,
       surfaces: CONTENT.surfaces,
@@ -80,7 +79,7 @@ export class FlightScene extends Phaser.Scene {
       stabilize: true,
       autoThrottle: true,
       arcade: true,
-      firstArrival: sessionProgress.bestStars === 0,
+      firstArrival: false,
     });
 
     const world = drawWorld(this, level);
@@ -91,7 +90,7 @@ export class FlightScene extends Phaser.Scene {
     this.shadow = this.add.ellipse(0, -4, 90, 14, C.ink, 0.45);
     this.trajectory = this.add.graphics();
     this.outcomeText = this.add.text(0, 0, '', textStyle(22, CSS.white, { stroke: CSS.ink, strokeThickness: 6 })).setOrigin(0.5, 1);
-    this.plane = new PlaneView(this, this.session.cfg.def);
+    this.plane = new PlaneView(this, this.session.cfg.def, cargo);
 
     const cam = this.cameras.main;
     cam.setZoom(this.zoom);
@@ -134,6 +133,7 @@ export class FlightScene extends Phaser.Scene {
   restart(): void {
     this.scene.stop('results');
     this.scene.stop('select');
+    this.scene.stop('order');
     this.scene.stop('pause');
     this.scene.stop('hud');
     this.scene.restart();
@@ -185,6 +185,7 @@ export class FlightScene extends Phaser.Scene {
     const s = this.session;
     if (this.hintStage === 0 && s.hasTakenOff) {
       this.hintStage = 1;
+      this.time.delayedCall(4200, () => this.hud.showFlash('« Statut : partenaire indépendant. Casque : en option. »', 2600));
       const c = this.hud.controls;
       this.hud.showHint(
         c.scheme === 'onebutton'
@@ -230,8 +231,8 @@ export class FlightScene extends Phaser.Scene {
         this.hintStage = 2;
         this.hud.showHint(
           this.hud.controls.scheme === 'onebutton'
-            ? 'Approche de Reims : relâche pour descendre vers une zone à drapeaux.\nL\'avion se pose tout seul en douceur.'
-            : 'Approche de Reims : choisis une zone à drapeaux\net descends doucement',
+            ? `Approche de ${this.session.cfg.level.to} : relâche au-dessus d'une zone à drapeaux.\nTrop haut ? ${this.hud.controls.isTouch ? 'Doigt à GAUCHE' : 'Touche ↓'} pour piquer.`
+            : `Approche de ${this.session.cfg.level.to} : choisis une zone à drapeaux\net descends doucement`,
         );
         this.hud.showFlash('Volets sortis : l\'avion ralentit', 2200);
         this.time.delayedCall(5000, () => this.hintStage === 2 && this.hud.showHint(''));
@@ -264,12 +265,23 @@ export class FlightScene extends Phaser.Scene {
       this.dust(st.x, 24);
       this.tweens.add({ targets: this.plane.root, angle: this.plane.root.angle + 160, y: -1.5 * PX, duration: 700, ease: 'Bounce.easeOut' });
     }
-    sessionProgress.flights += 1;
-    sessionProgress.boulons += result.reward.total;
-    sessionProgress.bestStars = Math.max(sessionProgress.bestStars, result.stars);
-    this.time.delayedCall(result.grade === 'CRASH' || result.grade === 'WATER' ? 1400 : 700, () => {
+    const d = result.delivery;
+    const order = currentOrder();
+    game.flights += 1;
+    game.boulons += d?.total ?? result.reward.total;
+    if (d) {
+      game.bestRating[order.id] = Math.max(game.bestRating[order.id] ?? 0, d.rating);
+      if (d.status === 'livre') game.unlocked = Math.max(game.unlocked, game.orderIndex + 2);
+    }
+    if (result.grade === 'WATER') {
+      // Le PLOUF devient un moment : le colis flotte, Pip a une phrase.
+      const box = this.add.text(st.x * PX + 40, 10, this.session.cfg.cargo?.icon ?? '📦', { fontSize: '44px' }).setOrigin(0.5);
+      this.tweens.add({ targets: box, y: 0, angle: 12, yoyo: true, repeat: -1, duration: 700, ease: 'Sine.easeInOut' });
+      this.hud.showFlash('« Le colis est imperméable. Moi, non. »', 2500);
+    }
+    this.time.delayedCall(result.grade === 'CRASH' || result.grade === 'WATER' ? 1800 : 800, () => {
       this.scene.sleep('hud');
-      this.scene.launch('results', { result, level: this.session.cfg.level });
+      this.scene.launch('results', { result, level: this.session.cfg.level, order });
     });
   }
 

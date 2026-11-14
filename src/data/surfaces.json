@@ -6,5 +6,7 @@
   "vineyard": {"tolerance": 0.65, "rolling": 0.14, "brake": 0.75, "landable": true, "label": "vignes"},
   "water": {"tolerance": 0, "rolling": 0, "brake": 0, "landable": false, "label": "eau"},
   "forest": {"tolerance": 0, "rolling": 0, "brake": 0, "landable": false, "label": "forêt"},
-  "city": {"tolerance": 0, "rolling": 0, "brake": 0, "landable": false, "label": "ville"}
+  "city": {"tolerance": 0, "rolling": 0, "brake": 0, "landable": false, "label": "ville"},
+  "sand": {"tolerance": 0.75, "rolling": 0.12, "brake": 0.6, "landable": true, "label": "sable"},
+  "dirt": {"tolerance": 0.9, "rolling": 0.05, "brake": 0.55, "landable": true, "label": "terre battue"}
 }

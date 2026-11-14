@@ -38,7 +38,8 @@ export class HudScene extends Phaser.Scene {
     this.controls = new Controls(this);
     this.g = this.add.graphics();
     const lvl = this.session.cfg.level;
-    this.add.text(24, 18, `${lvl.from.toUpperCase()}  →  ${lvl.to.toUpperCase()}`, textStyle(24));
+    const cargo = this.session.cfg.cargo;
+    this.add.text(24, 18, `${cargo ? `${cargo.icon} ` : ''}${lvl.from}  →  ${lvl.to}`, textStyle(24));
     this.remaining = this.add.text(24, 76, '', textStyle(18));
     this.gauges = this.add.text(24, 660, '', textStyle(18, CSS.ink, { backgroundColor: '#fdf3e1cc', padding: { x: 8, y: 4 } }));
     this.throttleLabel = this.add.text(0, 0, '', textStyle(16)).setOrigin(0.5, 0);
