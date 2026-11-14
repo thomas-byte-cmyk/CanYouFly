@@ -231,7 +231,7 @@ export class FlightScene extends Phaser.Scene {
         this.hintStage = 2;
         this.hud.showHint(
           this.hud.controls.scheme === 'onebutton'
-            ? `Approche de ${this.session.cfg.level.to} : relâche au-dessus d'une zone à drapeaux.\nL'avion se pose tout seul… le colis, lui, ça dépend de toi.`
+            ? `Approche de ${this.session.cfg.level.to} : relâche au-dessus d'une zone à drapeaux.\nTrop haut ? ${this.hud.controls.isTouch ? 'Doigt à GAUCHE' : 'Touche ↓'} pour piquer.`
             : `Approche de ${this.session.cfg.level.to} : choisis une zone à drapeaux\net descends doucement`,
         );
         this.hud.showFlash('Volets sortis : l\'avion ralentit', 2200);
