@@ -6,7 +6,7 @@ import { type Handling, computeHandling } from './handling';
 import { type LandingGrade, type LandingThresholds, type TouchdownResult, evaluateTouchdown, worstGrade } from './landing';
 import { type Reward, computeReward, starsFor } from './rewards';
 import type { AircraftDef, AircraftRuntime, Env, FlightState, SurfaceProps, SurfaceType, Tuning } from './types';
-import { type LandingZone, type Level, createEnv, moverPos, obstacleAt, zoneAt } from './world';
+import { type LandingZone, type Level, createEnv, geyserActive, moverPos, obstacleAt, zoneAt } from './world';
 
 export type Phase = 'ground' | 'flying' | 'rolling' | 'ended';
 
@@ -31,8 +31,10 @@ export interface ControlInput {
    * true = appuyé (monter), false = relâché (descente douce + arrondi automatique).
    */
   press?: boolean;
-  /** Mode un doigt : plonger (touche ↓, optionnel). */
+  /** Mode un doigt : plonger (touche ↓ / doigt gauche) ; au sol après l'atterrissage = FREINER. */
   dive?: boolean;
+  /** Freinage fort explicite (mode manche). */
+  brakeHard?: boolean;
 }
 
 export type SessionEvent =
@@ -42,6 +44,8 @@ export type SessionEvent =
   | { type: 'bolt'; index: number }
   | { type: 'bird'; index: number }
   | { type: 'balloon'; index: number }
+  | { type: 'parasail'; index: number }
+  | { type: 'spout'; index: number }
   | { type: 'touchdown'; result: TouchdownResult }
   | { type: 'fuel-empty' }
   | { type: 'approach' }
@@ -112,11 +116,16 @@ export class FlightSession {
   flaps = false;
   /** Mode un doigt : le joueur appuie en ce moment. */
   pressing = false;
+  /** Le joueur freine en ce moment (au sol). */
+  braking = false;
   /** La montée initiale est terminée (altitude de sécurité atteinte une fois). */
   private climbedOnce = false;
   ringsTaken: boolean[];
   boltsTaken: boolean[];
   chainsDone = new Set<string>();
+  /** Chocs subis en vol (oiseaux, montgolfière, parachute, jet d'eau) : ils abîment le colis. */
+  hits = 0;
+  private geyserCooldown: number[] = [];
   /** Temps jusqu'auquel un obstacle vivant ne peut plus être heurté (évite les doubles chocs). */
   private moverCooldown: number[];
   result?: FlightResult;
@@ -197,7 +206,10 @@ export class FlightSession {
       const excess = Math.max(0, s.airspeed - this.handling.approachSpeed);
       this.runtime.extraDrag = t.flapsDrag + 0.05 * excess;
     }
-    const braking = this.phase === 'rolling' && this.throttle < 0.2;
+    // Au sol après l'atterrissage : freinage automatique léger ; le joueur freine fort
+    // (doigt gauche / ↓ = même geste que « piquer » en vol) — retour de test v0.6.
+    this.braking = this.phase === 'rolling' && !!(input.dive || input.brakeHard);
+    const braking = this.phase === 'rolling' && this.throttle < 0.2 ? (this.braking ? t.brakes.player : t.brakes.auto) : 0;
     const info = stepPhysics(s, this.runtime, this.env, { pitch: this.pitch, throttle: this.throttle, brake: braking }, dt);
 
     const alt = this.altitude;
@@ -215,6 +227,7 @@ export class FlightSession {
     }
 
     this.collectibles();
+    this.spouts();
 
     // Collisions avec les obstacles (nez, queue, train, dessus du fuselage).
     const g = this.cfg.def.geometry;
@@ -361,17 +374,42 @@ export class FlightSession {
       const p = moverPos(m, s.time);
       if (Math.hypot(s.x - p.x, s.y - p.y) > m.r) return;
       this.moverCooldown[i] = s.time + 2;
+      this.hits += 1;
       if (m.type === 'birds') {
         // Oiseaux : l'avion est secoué et ralentit, sans crash (humour familial).
         s.vx *= 0.82;
         s.omega += 0.6;
         this.events.push({ type: 'bird', index: i });
+      } else if (m.type === 'parasail') {
+        // Parachute ascensionnel : le touriste s'accroche une seconde, l'avion freine net.
+        s.vx *= 0.7;
+        s.vy -= 3;
+        s.omega -= 0.5;
+        this.events.push({ type: 'parasail', index: i });
       } else {
         // Montgolfière : rebond « boing ».
         s.vx *= 0.6;
         s.vy = 8;
         s.omega += 0.4;
         this.events.push({ type: 'balloon', index: i });
+      }
+    });
+  }
+
+  private spouts(): void {
+    const s = this.state;
+    (this.cfg.level.geysers ?? []).forEach((g, i) => {
+      if (s.time < (this.geyserCooldown[i] ?? 0)) return;
+      const a = geyserActive(g, s.time);
+      if (a <= 0) return;
+      const top = g.h * a;
+      if (s.x >= g.x - 2 && s.x <= g.x + g.w + 2 && s.y - this.cfg.def.gear.height <= top) {
+        this.geyserCooldown[i] = s.time + 2;
+        this.hits += 1;
+        s.vx *= 0.8;
+        s.vy += 4;
+        s.omega += 0.5;
+        this.events.push({ type: 'spout', index: i });
       }
     });
   }
@@ -480,6 +518,7 @@ export class FlightSession {
             validated,
             progression: reward.progression,
             bonus: reward.rings,
+            hits: this.hits,
             seed: Math.floor(s.time * 7),
           })
         : undefined,

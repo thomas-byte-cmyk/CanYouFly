@@ -22,7 +22,7 @@ export interface LandingZone {
   difficulty: 1 | 2 | 3;
 }
 
-export type ObstacleType = 'tree' | 'fence' | 'lamppost' | 'building' | 'cathedral' | 'barn' | 'palm' | 'hut';
+export type ObstacleType = 'tree' | 'fence' | 'lamppost' | 'building' | 'cathedral' | 'barn' | 'palm' | 'hut' | 'rock';
 
 export interface Obstacle {
   type: ObstacleType;
@@ -44,8 +44,11 @@ export interface WindZone {
 export interface UpdraftZone {
   x0: number;
   x1: number;
+  /** Positive = ascendance ; négative = rabattant (nuage d'orage). */
   strength: number;
   top: number;
+  /** Affiché comme un nuage d'orage (rabattant). */
+  storm?: boolean;
 }
 
 export interface Ring {
@@ -66,7 +69,7 @@ export interface Bolt {
 
 /** Obstacle vivant à trajectoire prévisible (oiseaux, montgolfière). Le heurter pénalise sans crash. */
 export interface Mover {
-  type: 'birds' | 'balloon';
+  type: 'birds' | 'balloon' | 'parasail';
   x0: number;
   y0: number;
   /** Vitesse horizontale (u/s, négative = vers le joueur). */
@@ -75,6 +78,26 @@ export interface Mover {
   amp: number;
   period: number;
   r: number;
+}
+
+/**
+ * Jet d'eau d'une baleine : colonne active une fraction `on` de chaque période (prévisible).
+ * La toucher ne fait pas crasher, mais secoue l'avion et abîme le colis.
+ */
+export interface Geyser {
+  x: number;
+  w: number;
+  h: number;
+  period: number;
+  on: number;
+  phase?: number;
+}
+
+export function geyserActive(g: Geyser, t: number): number {
+  const k = (((t + (g.phase ?? 0)) % g.period) + g.period) % g.period / g.period;
+  if (k >= g.on) return 0;
+  // Montée puis descente du jet (0 … 1).
+  return Math.sin((k / g.on) * Math.PI);
 }
 
 export function moverPos(m: Mover, t: number): { x: number; y: number } {
@@ -102,6 +125,7 @@ export interface Level {
   rings: Ring[];
   bolts: Bolt[];
   movers: Mover[];
+  geysers?: Geyser[];
   landmarks: { type: string; x: number; label?: string }[];
 }
 

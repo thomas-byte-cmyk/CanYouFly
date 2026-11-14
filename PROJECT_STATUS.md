@@ -3,7 +3,7 @@
 _Dernière mise à jour : 13/11/2026_
 
 ## 🔀 Pivot du 14/11/2026 : « Pip, livreur de colis aux îles » (D17–D20)
-Étape A (conception) ✅ → [`docs/PIVOT_LIVREUR_TROPICAL.md`](docs/PIVOT_LIVREUR_TROPICAL.md). Étape B : **v0.6 « Première livraison » livrée** (2 îles, 3 colis, note client). **Prochaine étape : go / no-go (#26) — test du porteur du projet et de son fils.**
+Étape A (conception) ✅ → [`docs/PIVOT_LIVREUR_TROPICAL.md`](docs/PIVOT_LIVREUR_TROPICAL.md). Étape B : v0.6 « Première livraison » livrée. Retour des enfants → **v0.7 « Freins et obstacles »** (ajustement, pas de retour en arrière). **Prochaine étape : nouveau test (#26).**
 
 ## Phase actuelle (avant pivot) : 🟢 Phase 2 — Jalon « Sensation de vol » livré, **en attente de vos retours de jeu**
 

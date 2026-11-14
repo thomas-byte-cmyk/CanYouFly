@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { LandingZone, Level, Mover, Obstacle } from '../../sim/world';
+import type { Geyser, LandingZone, Level, Mover, Obstacle } from '../../sim/world';
 import { C, CSS, PX, textStyle } from '../style';
 
 const DEPTH = 60 * PX;
@@ -103,6 +103,23 @@ export function drawWorld(
     const ug = scene.add.graphics();
     const x0 = u.x0 * PX;
     const w = (u.x1 - u.x0) * PX;
+    if (u.storm) {
+      // Nuage d'orage : il rabat l'avion vers le bas (annoncé de loin).
+      ug.fillStyle(0x4a5568, 0.18).fillRect(x0, -u.top * PX, w, u.top * PX);
+      ug.fillStyle(0x5b6475, 1).lineStyle(4, C.ink, 1);
+      for (let k = 0; k < 4; k++) {
+        const cx = x0 + w * (0.15 + k * 0.23);
+        ug.fillCircle(cx, -u.top * PX, 48 + (k % 2) * 16).strokeCircle(cx, -u.top * PX, 48 + (k % 2) * 16);
+      }
+      ug.fillStyle(0x5b6475, 1).fillRect(x0 + w * 0.1, -u.top * PX, w * 0.8, 40);
+      ug.lineStyle(3, 0x9fb7d8, 0.7);
+      for (let y = 60; y < u.top * PX - 40; y += 70) {
+        for (let x = x0 + 20; x < x0 + w - 10; x += 46) ug.lineBetween(x, -u.top * PX + y, x - 10, -u.top * PX + y + 26);
+      }
+      ug.fillStyle(C.yellow, 1).fillTriangle(x0 + w * 0.5, -u.top * PX + 30, x0 + w * 0.44, -u.top * PX + 90, x0 + w * 0.52, -u.top * PX + 80);
+      scene.add.text(x0 + w / 2, -u.top * PX - 80, 'Orage ↓', textStyle(22, CSS.white, { stroke: CSS.ink, strokeThickness: 6 })).setOrigin(0.5);
+      return ug;
+    }
     ug.fillStyle(C.white, 0.13).fillRect(x0, -u.top * PX, w, u.top * PX);
     ug.lineStyle(4, C.white, 0.55);
     for (let y = 40; y < u.top * PX; y += 90) {
@@ -183,6 +200,20 @@ function drawObstacle(g: Phaser.GameObjects.Graphics, o: Obstacle): void {
       g.fillStyle(C.red, 1).fillRect(x, -h * 0.7, w, h * 0.7).strokeRect(x, -h * 0.7, w, h * 0.7);
       g.fillStyle(0x8a3b2a, 1).fillTriangle(x - 6, -h * 0.7, x + w / 2, -h, x + w + 6, -h * 0.7).strokeTriangle(x - 6, -h * 0.7, x + w / 2, -h, x + w + 6, -h * 0.7);
       g.fillStyle(C.cream, 1).fillRect(x + w * 0.35, -h * 0.45, w * 0.3, h * 0.45);
+      break;
+    }
+    case 'rock': {
+      // Rocher qui sort de l'eau : à survoler (le toucher = crash, il est visible de loin).
+      g.fillStyle(0x7d7468, 1).lineStyle(3, C.ink, 1);
+      const pts = [
+        new Phaser.Math.Vector2(x - 4, 6),
+        new Phaser.Math.Vector2(x + w * 0.1, -h * 0.7),
+        new Phaser.Math.Vector2(x + w * 0.45, -h),
+        new Phaser.Math.Vector2(x + w * 0.8, -h * 0.82),
+        new Phaser.Math.Vector2(x + w + 4, 6),
+      ];
+      g.fillPoints(pts, true).strokePoints(pts, true);
+      g.fillStyle(0xf5f0e6, 1).fillEllipse(x + w * 0.45, -h + 6, w * 0.5, 8);
       break;
     }
     case 'palm': {
@@ -284,6 +315,24 @@ function drawWindsock(g: Phaser.GameObjects.Graphics, x: number): void {
 /** Obstacle vivant (positionné à chaque image par la scène de vol). */
 export function drawMover(scene: Phaser.Scene, m: Mover): Phaser.GameObjects.Container {
   const g = scene.add.graphics();
+  if (m.type === 'parasail') {
+    // Parachute ascensionnel tiré par un bateau (le bateau suit le parachute au ras de l'eau).
+    const r = m.r * PX;
+    const boatY = m.y0 * PX;
+    g.lineStyle(2, C.ink, 0.8).lineBetween(0, r * 0.4, 70, boatY);
+    g.fillStyle(C.white, 1).lineStyle(3, C.ink, 1);
+    g.fillRoundedRect(40, boatY - 14, 80, 18, 6).strokeRoundedRect(40, boatY - 14, 80, 18, 6);
+    g.fillStyle(C.red, 1).fillRect(60, boatY - 26, 22, 12).strokeRect(60, boatY - 26, 22, 12);
+    g.beginPath();
+    g.arc(0, 0, r, Math.PI, 0, false);
+    g.closePath();
+    g.fillStyle(C.orange, 1).fillPath();
+    g.lineStyle(3, C.ink, 1).strokePath();
+    g.fillStyle(C.yellow, 1).fillTriangle(-r * 0.3, 0, 0, -r * 0.95, r * 0.3, 0);
+    g.lineStyle(1.5, C.ink, 1).lineBetween(-r, 0, 0, r * 0.4).lineBetween(r, 0, 0, r * 0.4);
+    g.fillStyle(0xf6c9a0, 1).fillCircle(0, r * 0.55, 6).strokeCircle(0, r * 0.55, 6);
+    return scene.add.container(0, 0, [g]);
+  }
   if (m.type === 'balloon') {
     const r = m.r * PX * 0.9;
     g.lineStyle(3, C.ink, 1);
@@ -304,4 +353,31 @@ export function drawMover(scene: Phaser.Scene, m: Mover): Phaser.GameObjects.Con
     }
   }
   return scene.add.container(0, 0, [g]);
+}
+
+/** Baleine + jet d'eau (redessiné à chaque image selon l'activité 0…1). */
+export function drawGeyser(scene: Phaser.Scene, gz: Geyser): (activity: number) => void {
+  const whale = scene.add.graphics();
+  const x = gz.x * PX;
+  const w = gz.w * PX;
+  whale.fillStyle(0x4f6d8c, 1).lineStyle(3, C.ink, 1);
+  whale.fillEllipse(x + w / 2, 6, w * 2.4, 34).strokeEllipse(x + w / 2, 6, w * 2.4, 34);
+  whale.fillStyle(C.white, 1).fillCircle(x + w * 1.3, 0, 4);
+  whale.fillStyle(C.ink, 1).fillCircle(x + w * 1.3, 0, 2);
+  const jet = scene.add.graphics();
+  const label = scene.add.text(x + w / 2, -gz.h * PX - 40, 'Baleine 🐳 (jet régulier)', textStyle(18, CSS.white, { stroke: CSS.ink, strokeThickness: 5 })).setOrigin(0.5);
+  return (a: number) => {
+    jet.clear();
+    label.setAlpha(0.6 + 0.4 * a);
+    if (a <= 0) {
+      // Petit filet d'eau : le joueur voit que la baleine va souffler.
+      jet.fillStyle(0xbfe8f0, 0.8).fillRect(x + w / 2 - 3, -14, 6, 14);
+      return;
+    }
+    const top = gz.h * PX * a;
+    jet.fillStyle(0xbfe8f0, 0.9).fillRect(x, -top, w, top);
+    jet.lineStyle(3, C.white, 0.9).strokeRect(x, -top, w, top);
+    jet.fillStyle(C.white, 0.9);
+    for (let k = 0; k < 5; k++) jet.fillCircle(x + w / 2 + Math.sin(k * 1.7) * w, -top + Math.cos(k) * 8, 8);
+  };
 }

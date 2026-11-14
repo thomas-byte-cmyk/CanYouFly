@@ -35,5 +35,9 @@
     "flareHeight": 4,
     "flareDeg": -2,
     "gain": 4
+  },
+  "brakes": {
+    "auto": 0.35,
+    "player": 1.6
   }
 }

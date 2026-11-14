@@ -150,6 +150,14 @@ export class HudScene extends Phaser.Scene {
       }
     }
 
+    // Au sol après l'atterrissage : rappel du frein (retour de test v0.6).
+    if (s.phase === 'rolling' && Math.abs(st.vx) > 4 && !this.controls.dive) {
+      const blink = Math.floor(this.time.now / 220) % 2 === 0;
+      this.flare.setText(blink ? (this.controls.isTouch ? '◀ FREINE ! (doigt à gauche)' : '◀ FREINE ! (touche ↓)') : '');
+    } else if (s.phase === 'rolling' && this.controls.dive) {
+      this.flare.setText('FREINAGE !');
+    }
+
     // Mode un doigt tactile : rappel discret des deux moitiés d'écran.
     if (this.controls.isTouch && oneButton) {
       const pressing = this.controls.press;
@@ -182,7 +190,7 @@ export class HudScene extends Phaser.Scene {
     } else {
       this.sinkText.setVisible(false);
       this.zonesText.setVisible(false);
-      this.flare.setText('');
+      if (s.phase !== 'rolling') this.flare.setText('');
     }
 
     this.warning.setText(st.stalled && s.phase === 'flying' && Math.floor(this.time.now / 250) % 2 === 0 ? 'DÉCROCHAGE ! Pique pour reprendre de la vitesse' : '');

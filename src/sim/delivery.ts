@@ -28,6 +28,8 @@ export interface DeliveryInput {
   progression: number;
   /** Boulons ramassés, anneaux, séries. */
   bonus: number;
+  /** Chocs subis en vol : chacun abîme un colis fragile (deux chocs pour un colis normal). */
+  hits?: number;
   seed: number;
 }
 
@@ -46,16 +48,22 @@ export function computeDelivery(i: DeliveryInput): Delivery {
   } else if (!i.validated) {
     d = { status: 'refuse', outcome: 'refuse', rating: 1, pay: 0, tip: 0, consolation: Math.round(0.3 * i.pkg.price * i.progression) };
   } else {
-    const condition = i.grade === 'PERFECT' || i.grade === 'GOOD' ? 'intact' : i.grade === 'ROUGH' ? 'cabosse' : 'miettes';
-    const outcome: DeliveryOutcome = i.grade === 'PERFECT' ? 'parfait' : condition;
-    const rating = i.grade === 'PERFECT' ? 5 : i.grade === 'GOOD' ? 4 : i.grade === 'ROUGH' ? 3 : 2;
+    const LEVELS = ['intact', 'cabosse', 'miettes'] as const;
+    let level = i.grade === 'PERFECT' || i.grade === 'GOOD' ? 0 : i.grade === 'ROUGH' ? 1 : 2;
+    const hits = i.hits ?? 0;
+    const damage = i.pkg.fragility < 1 ? hits : Math.floor(hits / 2);
+    level = Math.min(2, level + damage);
+    const condition = LEVELS[level];
+    const outcome: DeliveryOutcome = i.grade === 'PERFECT' && level === 0 ? 'parfait' : condition;
+    const base = i.grade === 'PERFECT' ? 5 : i.grade === 'GOOD' ? 4 : i.grade === 'ROUGH' ? 3 : 2;
+    const rating = Math.max(1, base - damage);
     d = {
       status: 'livre',
       condition,
       outcome,
       rating,
       pay: Math.round(i.pkg.price * CONDITION_PAY[condition]),
-      tip: i.grade === 'PERFECT' ? i.pkg.tip : 0,
+      tip: outcome === 'parfait' ? i.pkg.tip : 0,
       consolation: 0,
     };
   }

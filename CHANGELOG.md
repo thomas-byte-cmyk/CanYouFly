@@ -4,6 +4,19 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+## [0.7.0] — 14/11/2026 — Freins et obstacles
+Retours des enfants : « un peu ennuyant pendant le vol », « il faut ajouter des obstacles », « il faut pouvoir freiner à l'atterrissage ».
+- **Freiner** : au sol, doigt à gauche (ou ↓) = FREIN (même geste que piquer). Le freinage automatique est plus faible : bien freiner fait la différence. Message « ◀ FREINE ! » au sol.
+- **Obstacles** :
+  - rochers qui sortent de l'eau (à survoler ; les toucher = crash) ;
+  - mouettes en plus grand nombre ;
+  - bateau à parachute ascensionnel qui traverse ;
+  - baleine qui souffle un jet d'eau à intervalles réguliers ;
+  - nuage d'orage qui rabat l'avion vers le bas.
+- **Les chocs abîment le colis** : un choc suffit pour un colis fragile (œufs), deux pour un colis normal. Plus de pourboire si le colis n'est pas intact.
+- **Caméra** : elle garde toujours la mer à l'écran et dézoome quand l'avion monte, pour voir arriver les obstacles qui sortent de l'eau.
+- Pilote robot partagé (`tests/robot.ts`) qui anticipe les obstacles et freine ; 57 tests (dont : freiner raccourcit l'arrêt de plus de 40 %, un pilote inattentif ne livre pas les œufs intacts).
+
 ## [0.6.0] — 14/11/2026 — « Première livraison » (pivot D17)
 - **Boucle livreur** : écran de commande (colis, contraintes en pictos, message du client) → adapter l'avion au colis → vol → livraison en atterrissant → écran « Note client » (1–5 ★, avis, état du colis, paiement, pourboire, phrase de Pip) → commande suivante.
 - **2 îles** : Île du Dépôt (tutoriel, piste en terre) et Île Cocotte (plage courte + pré aux poules, îlot de secours, alizé, oiseaux) ; décor tropical (sable, palmiers, cases, archipel à l'horizon).

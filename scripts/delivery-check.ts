@@ -2,24 +2,7 @@
 // vise chaque zone d'arrivée et on garde la meilleure livraison.
 // Usage : npx vite-node scripts/delivery-check.ts
 import { CONTENT } from '../src/sim/content';
-import { FlightSession } from '../src/sim/session';
-
-function deliver(orderId: string, planeId: string, touchX: number, cruise = 45) {
-  const order = CONTENT.orders.find((o) => o.id === orderId)!;
-  const level = CONTENT.levels[order.levelId];
-  const s = new FlightSession({
-    def: CONTENT.aircraft[planeId], level, tuning: CONTENT.tuning, surfaces: CONTENT.surfaces, thresholds: CONTENT.landing,
-    stabilize: true, autoThrottle: true, firstArrival: false, arcade: true, cargo: CONTENT.packages[order.packageId],
-  });
-  for (let i = 0; i < 60 * 150 && s.phase !== 'ended'; i++) {
-    const clear = Math.max(0, ...level.obstacles.filter((o) => o.x + o.w > s.state.x && o.x < s.state.x + 30 && o.x < touchX).map((o) => o.h + 3));
-    const want = Math.max(clear, Math.min(cruise, (touchX - s.state.x) * 0.09));
-    const press = s.phase === 'ground' ? true : s.altitude < want - 2;
-    const dive = !press && s.phase === 'flying' && s.altitude > want + 6;
-    s.step({ pitch: 0, press, dive });
-  }
-  return s.result!;
-}
+import { deliver } from '../tests/robot';
 
 const rank = { parfait: 5, intact: 4, cabosse: 3, miettes: 2, refuse: 1, plouf: 0 } as const;
 {
