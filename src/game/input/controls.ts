@@ -16,6 +16,7 @@ export class Controls {
   /** Mode un doigt : ↓ pour plonger (optionnel, clavier). */
   dive = false;
   private pressPointers = new Set<number>();
+  private divePointers = new Set<number>();
   /** Valeur manuelle des gaz si le joueur a pris la main, sinon undefined (gaz automatiques). */
   manualThrottle: number | undefined;
   stick: { ox: number; oy: number; x: number; y: number } | null = null;
@@ -101,7 +102,7 @@ export class Controls {
     this.pitch = p;
     if (this.scheme === 'onebutton') {
       this.press = this.pressPointers.size > 0 || k.up.isDown || k.w.isDown || k.z.isDown || k.space.isDown;
-      this.dive = !this.press && (k.down.isDown || k.s.isDown);
+      this.dive = !this.press && (this.divePointers.size > 0 || k.down.isDown || k.s.isDown);
       return;
     }
 
@@ -125,8 +126,11 @@ export class Controls {
 
   private onDown(p: Phaser.Input.Pointer): void {
     if (this.scheme === 'onebutton') {
-      // Tout l'écran est un bouton, sauf le bouton pause (en haut à droite).
-      if (!(p.x > 1140 && p.y < 100)) this.pressPointers.add(p.id);
+      // Moitié droite = monter, moitié gauche = piquer (sauf le bouton pause en haut à droite).
+      // À la souris, tout l'écran fait monter (on pique avec ↓).
+      if (p.x > 1140 && p.y < 100) return;
+      if ((this.isTouch || p.wasTouch) && p.x < 640) this.divePointers.add(p.id);
+      else this.pressPointers.add(p.id);
       return;
     }
     if (!this.isTouch && !p.wasTouch) return;
@@ -158,6 +162,7 @@ export class Controls {
 
   private onUp(p: Phaser.Input.Pointer): void {
     this.pressPointers.delete(p.id);
+    this.divePointers.delete(p.id);
     if (p.id === this.throttlePointer) this.throttlePointer = null;
     if (p.id === this.stickPointer) {
       this.stickPointer = null;

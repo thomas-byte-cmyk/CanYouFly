@@ -4,6 +4,14 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+## [0.5.0] — 14/11/2026 — L'avion compte
+Retours : « on ne peut pas descendre plus vite », « le gaz ne sert à rien », « fabriquer l'avion doit avoir un impact ».
+- **Piquer** : doigt à gauche de l'écran (ou ↓) ; doigt à droite = monter ; rien = descente douce.
+- La jauge des gaz (inutile en mode un doigt) devient la **jauge de carburant** (rouge et clignotante sous 25 %).
+- **Caractère de vol calculé à partir des pièces** (`src/sim/handling.ts`) : angle de montée (moteur, poids, traînée), angle de descente (finesse), vitesses de décrochage / d'approche / de croisière / max, vivacité en tangage, autonomie. Utilisé par la commande à un doigt, les gaz automatiques et les volets.
+- **3 avions au choix** (avant-goût du hangar) : L'Albatros (facile : plane loin, se pose doucement), Le Coucou (moyen), La Fusée (difficile : monte fort, atterrit vite, boit beaucoup). Écran « Choisis ton avion » avec 6 barres calculées, accessible depuis les résultats (bouton « Changer d'avion » ou touche C).
+- 5 nouveaux tests (39) : aucun avion ne domine les autres sur toutes les barres, et chaque avion peut réussir l'étape.
+
 ## [0.4.0] — 14/11/2026 — Commande à un doigt
 Retour : « les commandes sont encore trop dures, mon fils (12 ans et +) a essayé, pas assez intuitif ».
 - **Nouvelle commande par défaut (décision D16)** : tout l'écran est un bouton. Appuyer (doigt, clic, Espace ou ↑) = monter ; relâcher = redescendre doucement ; près du sol, arrondi automatique. ↓ (clavier) = plonger, en option.

@@ -33,6 +33,9 @@ const OUTCOME_LABEL: Record<LandingGrade, string> = {
   WATER: 'PLOUF !',
 };
 
+/** Avion choisi (écran de sélection ; le hangar le remplacera en Phase 2b). */
+export const selectedAircraft = { id: 'coucou' };
+
 /** Progression conservée pendant la session de jeu (la sauvegarde arrive avec l'issue #15). */
 export const sessionProgress = { boulons: 0, bestStars: 0, flights: 0 };
 
@@ -69,7 +72,7 @@ export class FlightScene extends Phaser.Scene {
     this.particles = [];
     const level = CONTENT.levels['paris-reims'];
     this.session = new FlightSession({
-      def: CONTENT.aircraft.coucou,
+      def: CONTENT.aircraft[selectedAircraft.id] ?? CONTENT.aircraft.coucou,
       level,
       tuning: CONTENT.tuning,
       surfaces: CONTENT.surfaces,
@@ -88,7 +91,7 @@ export class FlightScene extends Phaser.Scene {
     this.shadow = this.add.ellipse(0, -4, 90, 14, C.ink, 0.45);
     this.trajectory = this.add.graphics();
     this.outcomeText = this.add.text(0, 0, '', textStyle(22, CSS.white, { stroke: CSS.ink, strokeThickness: 6 })).setOrigin(0.5, 1);
-    this.plane = new PlaneView(this);
+    this.plane = new PlaneView(this, this.session.cfg.def);
 
     const cam = this.cameras.main;
     cam.setZoom(this.zoom);
@@ -105,7 +108,7 @@ export class FlightScene extends Phaser.Scene {
       this.hud.showHint(
         c.scheme === 'onebutton'
           ? c.isTouch
-            ? 'Garde le doigt appuyé sur l\'écran\npour décoller et monter'
+            ? 'Garde le doigt appuyé à DROITE de l\'écran\npour décoller et monter'
             : 'Maintiens ESPACE (ou clic) pour décoller et monter'
           : c.isTouch
             ? 'Glisse ton pouce droit vers le HAUT\npour décoller'
@@ -130,6 +133,7 @@ export class FlightScene extends Phaser.Scene {
 
   restart(): void {
     this.scene.stop('results');
+    this.scene.stop('select');
     this.scene.stop('pause');
     this.scene.stop('hud');
     this.scene.restart();

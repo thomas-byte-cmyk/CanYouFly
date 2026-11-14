@@ -20,6 +20,7 @@ export class HudScene extends Phaser.Scene {
   private sinkText!: Phaser.GameObjects.Text;
   private debug!: Phaser.GameObjects.Text;
   private zonesText!: Phaser.GameObjects.Text;
+  private zoneLabels!: Phaser.GameObjects.Container;
   private flare!: Phaser.GameObjects.Text;
   private autoButton!: Phaser.GameObjects.Text;
   private flashUntil = 0;
@@ -45,6 +46,10 @@ export class HudScene extends Phaser.Scene {
     this.flash = this.add.text(640, 200, '', textStyle(34, CSS.yellow, { stroke: CSS.ink, strokeThickness: 8 })).setOrigin(0.5);
     this.warning = this.add.text(640, 260, '', textStyle(40, CSS.red, { stroke: CSS.cream, strokeThickness: 8 })).setOrigin(0.5);
     this.sinkText = this.add.text(1256, 110, '', textStyle(20, CSS.ink, { backgroundColor: '#fdf3e1', padding: { x: 10, y: 6 } })).setOrigin(1, 0);
+    this.zoneLabels = this.add.container(0, 0, [
+      this.add.text(400, 640, '▼ PIQUER (doigt à gauche)', textStyle(20, CSS.cream, { stroke: CSS.ink, strokeThickness: 5 })).setOrigin(0.5, 1).setAlpha(0.8),
+      this.add.text(960, 640, 'MONTER (doigt à droite) ▲', textStyle(20, CSS.cream, { stroke: CSS.ink, strokeThickness: 5 })).setOrigin(0.5, 1).setAlpha(0.8),
+    ]);
     this.zonesText = this.add.text(1256, 160, '', textStyle(18, CSS.ink, { backgroundColor: '#fdf3e1e6', padding: { x: 10, y: 6 }, align: 'right' })).setOrigin(1, 0);
     this.flare = this.add.text(640, 330, '', textStyle(44, CSS.yellow, { stroke: CSS.ink, strokeThickness: 9 })).setOrigin(0.5);
     this.debug = this.add.text(1256, 300, '', textStyle(14, CSS.ink, { backgroundColor: '#ffffffcc', padding: { x: 6, y: 4 } })).setOrigin(1, 0).setVisible(false);
@@ -97,7 +102,7 @@ export class HudScene extends Phaser.Scene {
 
     // Jauges.
     const fuelPct = Math.round((st.fuel / s.cfg.def.fuel.capacity) * 100);
-    this.gauges.setText(`ALT ${Math.max(0, Math.round(s.altitude * 10))} m   VIT ${Math.round(st.airspeed * 4)} km/h   CARBURANT ${fuelPct} %`);
+    this.gauges.setText(`${s.cfg.def.name.toUpperCase()}   ALT ${Math.max(0, Math.round(s.altitude * 10))} m   VIT ${Math.round(st.airspeed * 4)} km/h   CARBURANT ${fuelPct} %`);
 
     // Curseur des gaz (toujours affiché : il montre aussi l'état des gaz auto au clavier).
     const sl = this.controls.slider;
@@ -108,10 +113,15 @@ export class HudScene extends Phaser.Scene {
     const bottom = showSlider ? sl.bottom : 640;
     const w = showSlider ? sl.width : 26;
     g.fillStyle(C.cream, 0.85).fillRoundedRect(sx, top, w, bottom - top, 10);
-    const th = s.throttle;
-    g.fillStyle(st.fuel > 0 ? C.orange : C.stone, 1).fillRoundedRect(sx, bottom - (bottom - top) * th, w, (bottom - top) * th, 10);
+    // Mode un doigt : les gaz sont automatiques, la jauge montre le CARBURANT (qui dépend de l'avion).
+    const fuelFrac = st.fuel / s.cfg.def.fuel.capacity;
+    const th = oneButton ? fuelFrac : s.throttle;
+    const lowFuel = oneButton && fuelFrac < 0.25;
+    const fill = st.fuel <= 0 ? C.stone : oneButton ? (lowFuel ? C.red : C.green) : C.orange;
+    g.fillStyle(fill, 1).fillRoundedRect(sx, bottom - (bottom - top) * th, w, (bottom - top) * th, 10);
     g.lineStyle(3, C.ink, 1).strokeRoundedRect(sx, top, w, bottom - top, 10);
-    this.throttleLabel.setPosition(sx + w / 2, bottom + 4).setText(st.fuel <= 0 ? 'PANNE' : s.autoThrottle ? 'GAZ AUTO' : `GAZ ${Math.round(th * 100)}%`);
+    const label = st.fuel <= 0 ? 'PANNE' : oneButton ? `CARBURANT ${Math.round(fuelFrac * 100)}%` : s.autoThrottle ? 'GAZ AUTO' : `GAZ ${Math.round(s.throttle * 100)}%`;
+    this.throttleLabel.setPosition(sx + w / 2, bottom + 4).setText(label).setColor(lowFuel && Math.floor(this.time.now / 300) % 2 === 0 ? CSS.red : CSS.ink);
     if (!showSlider) this.throttleLabel.setPosition(sx + w + 46, bottom - 20);
     this.autoButton.setVisible(!s.autoThrottle && !oneButton);
     if (!showSlider) this.autoButton.setPosition(sx + w + 46, top + 10).setText('AUTO (T)');
@@ -137,6 +147,17 @@ export class HudScene extends Phaser.Scene {
         g.fillStyle(C.cream, 0.25).fillCircle(1050, 520, 70);
         g.lineStyle(3, C.ink, 0.4).strokeCircle(1050, 520, 70);
       }
+    }
+
+    // Mode un doigt tactile : rappel discret des deux moitiés d'écran.
+    if (this.controls.isTouch && oneButton) {
+      const pressing = this.controls.press;
+      const diving = this.controls.dive;
+      g.fillStyle(C.ink, diving ? 0.12 : 0.04).fillRect(0, 100, 640, 620);
+      g.fillStyle(C.ink, pressing ? 0.12 : 0.04).fillRect(640, 100, 640, 620);
+      this.zoneLabels.setVisible(true);
+    } else {
+      this.zoneLabels.setVisible(false);
     }
 
     // Approche : vitesse verticale avec code couleur (aide à l'atterrissage).

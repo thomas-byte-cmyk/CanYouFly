@@ -24,6 +24,9 @@ export interface MassItem {
 export interface AircraftDef {
   id: string;
   name: string;
+  description?: string;
+  /** Apparence (placeholder) : couleurs en hexadécimal, taille relative des ailes et du moteur. */
+  look?: { body: string; wing: string; accent: string; wingScale: number; engineScale: number };
   masses: MassItem[];
   fuel: { capacity: number; x: number; burnRate: number };
   engine: { thrustMax: number; propVmax: number };
@@ -143,6 +146,8 @@ export interface AircraftRuntime {
   extraDrag: number;
   /** Pilotage arcade (par défaut en jeu) plutôt que simulation des moments. */
   arcade: boolean;
+  /** Vivacité en tangage propre à l'avion (1 = Le Coucou). */
+  pitchRateScale?: number;
 }
 
 export interface StepInfo {
