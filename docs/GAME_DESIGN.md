@@ -1,5 +1,7 @@
 # GAME DESIGN — CAN YOU FLY?
 
+> ⚠️ **Pivot du 14/11/2026 (D17)** : le sujet est devenu « Pip, livreur de colis aux îles ». Les parties qui parlent de villes européennes, de Paris → Istanbul ou de souvenirs de ville sont remplacées par `docs/PIVOT_LIVREUR_TROPICAL.md`. Le reste (mécaniques, équilibrage, monétisation, technique) reste valable.
+
 > Statut : **proposition Phase 1 (conception)** — en attente de validation.
 > Responsable : Agent 2 (Game Design & Art Direction). Documents liés : `LANDING_AND_CRASH_SYSTEM.md`, `PROGRESSION_SYSTEM.md`, `WORLD_MAP.md`, `PILOT_CHARACTER.md`, `TECHNICAL_ARCHITECTURE.md`.
 > Les chiffres sont **indicatifs** : ils servent à exprimer les intentions et seront réglés en prototype.

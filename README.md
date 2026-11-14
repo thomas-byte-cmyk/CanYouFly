@@ -1,9 +1,11 @@
 # ✈️ CAN YOU FLY? *(nom de code)*
 
-> **Construis un avion bricolé, pilote-le de ville en ville à travers l'Europe… puis réussis à le poser.**
+> **Pip, « partenaire indépendant » de la société LivrÎle, livre des colis absurdes aux habitants d'un archipel tropical. Chaque colis oblige à adapter l'avion… puis à réussir l'atterrissage.**
+>
+> *Pivot du 14/11/2026 : voir [`docs/PIVOT_LIVREUR_TROPICAL.md`](docs/PIVOT_LIVREUR_TROPICAL.md). La version jouable en ligne (v0.5) est encore l'ancienne étape Paris → Reims.*
 > Jeu d'arcade 2D cartoon en HTML5, destiné à la plateforme [Poki](https://poki.com).
 
-**État actuel : ✅ Conception validée (13/11/2026) — prochaine étape : jalon « Sensation de vol » (Phase 2).** Aucun code n'a encore été écrit.
+**État actuel : v0.5 jouable sur https://thomas-byte-cmyk.github.io/CanYouFly/ — pivot validé, prochaine étape : v0.6 « Première livraison ».**
 👉 Commencez par lire le **[Dossier de conception](docs/DESIGN_DOSSIER.md)**, puis **[PROJECT_STATUS.md](PROJECT_STATUS.md)**.
 
 ## Le jeu en 30 secondes

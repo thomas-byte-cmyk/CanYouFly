@@ -4,6 +4,12 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+### 14/11/2026 — Pivot « livreur de colis aux îles » (étape A, sans code)
+- Nouveau document `docs/PIVOT_LIVREUR_TROPICAL.md` : vision, ce qu'on garde, ce qu'on jette, réutilisation du code, colis et contraintes, 9 îles, direction artistique, ton, risques, impact Poki et pubs, 10 exemples de commandes.
+- Décisions D17 à D20 ; D6 remplacée, D5 adaptée, D8 réinterprétée, D7 et D12 maintenues.
+- Roadmap réorganisée (v0.6 « Première livraison », go / no-go, hangar).
+- Bilan du projet au 14/11/2026 (`docs/BILAN_2026-11-14.md`).
+
 ## [0.5.0] — 14/11/2026 — L'avion compte
 Retours : « on ne peut pas descendre plus vite », « le gaz ne sert à rien », « fabriquer l'avion doit avoir un impact ».
 - **Piquer** : doigt à gauche de l'écran (ou ↓) ; doigt à droite = monter ; rien = descente douce.

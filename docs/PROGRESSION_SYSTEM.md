@@ -1,5 +1,7 @@
 # PROGRESSION_SYSTEM — Économie, déblocages, badges
 
+> ⚠️ **Pivot du 14/11/2026 (D17)** : le sujet est devenu « Pip, livreur de colis aux îles ». Les parties qui parlent de villes européennes, de Paris → Istanbul ou de souvenirs de ville sont remplacées par `docs/PIVOT_LIVREUR_TROPICAL.md`. Le reste (mécaniques, équilibrage, monétisation, technique) reste valable.
+
 > Statut : **proposition Phase 1 — à valider**. Auteur : Agent 4 (Monetization & Game Economy).
 > Tous les chiffres sont des **valeurs initiales à équilibrer** en playtest. Ils vivront dans des fichiers de configuration (`economy.json`, `parts.json`, `legs.json`, `badges.json`), jamais en dur dans le code.
 
