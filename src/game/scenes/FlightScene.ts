@@ -2,11 +2,11 @@ import Phaser from 'phaser';
 import { CONTENT } from '../../sim/content';
 import { FIXED_DT } from '../../sim/flight';
 import type { LandingGrade } from '../../sim/landing';
-import { moverPos } from '../../sim/world';
+import { geyserActive, moverPos } from '../../sim/world';
 import { type FlightResult, FlightSession } from '../../sim/session';
 import { PlaneView } from '../render/plane';
 import { currentOrder, game } from '../state';
-import { drawMover, drawWorld } from '../render/world';
+import { drawGeyser, drawMover, drawWorld } from '../render/world';
 import { C, CSS, PX, textStyle } from '../style';
 import type { BackgroundScene } from './BackgroundScene';
 import type { HudScene } from './HudScene';
@@ -46,6 +46,7 @@ export class FlightScene extends Phaser.Scene {
   private updrafts: Phaser.GameObjects.Graphics[] = [];
   private bolts: Phaser.GameObjects.Graphics[] = [];
   private movers: Phaser.GameObjects.Container[] = [];
+  private geysers: ((a: number) => void)[] = [];
   private shadow!: Phaser.GameObjects.Ellipse;
   private outcomeText!: Phaser.GameObjects.Text;
   private particles: Particle[] = [];
@@ -87,6 +88,7 @@ export class FlightScene extends Phaser.Scene {
     this.updrafts = world.updrafts;
     this.bolts = world.bolts;
     this.movers = level.movers.map((m) => drawMover(this, m));
+    this.geysers = (level.geysers ?? []).map((g) => drawGeyser(this, g));
     this.shadow = this.add.ellipse(0, -4, 90, 14, C.ink, 0.45);
     this.trajectory = this.add.graphics();
     this.outcomeText = this.add.text(0, 0, '', textStyle(22, CSS.white, { stroke: CSS.ink, strokeThickness: 6 })).setOrigin(0.5, 1);
@@ -174,6 +176,7 @@ export class FlightScene extends Phaser.Scene {
 
     // Obstacles vivants (même horloge que la simulation : trajectoires prévisibles).
     this.cfgMovers(st.time);
+    (s.cfg.level.geysers ?? []).forEach((g, i) => this.geysers[i](geyserActive(g, st.time)));
 
     this.updateTrajectory();
     this.updateParticles(delta / 1000);
@@ -216,12 +219,20 @@ export class FlightScene extends Phaser.Scene {
         break;
       }
       case 'bird':
-        this.hud.showFlash('Oiseaux ! Pip est couvert de plumes', 1800);
+        this.hitCargo('Mouettes ! Pip est couvert de plumes');
         this.feathers(this.session.state.x, this.session.state.y);
         this.plane.setExpression('scared');
         break;
+      case 'parasail':
+        this.hitCargo('Un touriste en parachute s\'accroche à l\'aile !');
+        this.cameras.main.shake(200, 0.006);
+        break;
+      case 'spout':
+        this.hitCargo('PSCHHH ! La baleine t\'a arrosé');
+        this.cameras.main.shake(200, 0.005);
+        break;
       case 'balloon':
-        this.hud.showFlash('BOING ! Pardon, madame la montgolfière', 1800);
+        this.hitCargo('BOING ! Pardon, madame la montgolfière');
         this.cameras.main.shake(200, 0.006);
         break;
       case 'fuel-empty':
@@ -318,6 +329,14 @@ export class FlightScene extends Phaser.Scene {
       .setColor(`#${color.toString(16).padStart(6, '0')}`);
   }
 
+  /** Choc en vol : message + avertissement sur le colis (il s'abîme, surtout s'il est fragile). */
+  private hitCargo(msg: string): void {
+    const pkg = this.session.cfg.cargo;
+    const fragile = pkg ? pkg.fragility < 1 : false;
+    const tail = pkg ? (fragile ? `\n${pkg.icon} Le colis a pris un coup !` : `\n${pkg.icon} Le colis a tenu… cette fois.`) : '';
+    this.hud.showFlash(msg + tail, 2200);
+  }
+
   private feathers(x: number, y: number): void {
     for (let i = 0; i < 12; i++) {
       const f = this.add.ellipse(x * PX, -y * PX, 10, 4, C.white, 1).setStrokeStyle(1, C.ink);
@@ -328,11 +347,11 @@ export class FlightScene extends Phaser.Scene {
   private updateCamera(dt: number): void {
     const s = this.session;
     const cam = this.cameras.main;
-    // En approche, la caméra dézoome pour montrer à la fois l'avion, le sol et les zones
-    // (règle d'équité : on voit où l'on va se poser).
+    // La caméra garde toujours le sol / la mer à l'écran (les rochers et la baleine sortent de l'eau :
+    // il faut les voir venir — règle d'équité) et dézoome quand l'avion monte.
     const fit = this.scale.height / (Math.max(0, s.altitude) * PX + 300);
-    const high = s.altitude > 120 ? 1.0 : 1.2;
-    const targetZoom = this.ended ? 1.35 : s.inApproach ? Phaser.Math.Clamp(fit, 0.5, 1.0) : high;
+    const maxZoom = s.inApproach ? 1.0 : 1.2;
+    const targetZoom = this.ended ? 1.35 : Phaser.Math.Clamp(fit, 0.55, maxZoom);
     this.zoom += (targetZoom - this.zoom) * Math.min(1, dt * 1.5);
     cam.setZoom(this.zoom);
 
@@ -345,11 +364,8 @@ export class FlightScene extends Phaser.Scene {
     const tx = px + lookAhead;
     // Le sol reste en bas de l'écran quand l'avion vole bas.
     const groundLimit = -(viewH / 2 - 130 / this.zoom);
-    let ty = Math.min(py, groundLimit);
-    if (s.inApproach && !this.ended) {
-      // Sol en bas, avion au moins à 110 px du haut.
-      ty = Math.min(groundLimit, py + viewH / 2 - 110 / this.zoom);
-    }
+    // Sol en bas de l'écran, avion au moins à 110 px du haut.
+    const ty = this.ended ? Math.min(py, groundLimit) : Math.min(groundLimit, py + viewH / 2 - 110 / this.zoom);
     const k = Math.min(1, dt * 4);
     this.camX += (tx - this.camX) * k;
     this.camY += (ty - this.camY) * k;

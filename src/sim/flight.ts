@@ -173,7 +173,8 @@ export function stepPhysics(
     // Frottement de roulement (+ freins après l'atterrissage).
     const props = env.surfaceProps(env.surfaceAt(s.x));
     const normal = Math.max(0, -fy);
-    const mu = props.rolling + (input.brake ? props.brake : 0);
+    const brakeK = typeof input.brake === 'number' ? input.brake : input.brake ? 1 : 0;
+    const mu = props.rolling + brakeK * props.brake;
     const dv = ((mu * normal) / M) * dt;
     if (Math.abs(s.vx) <= dv) s.vx = 0;
     else s.vx -= Math.sign(s.vx) * dv;

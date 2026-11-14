@@ -6,28 +6,11 @@ import { computeDelivery } from '../src/sim/delivery';
 import { evaluateTouchdown } from '../src/sim/landing';
 import { computeHandling } from '../src/sim/handling';
 import { FlightSession } from '../src/sim/session';
+import { deliver } from './robot';
 
 const T = CONTENT.tuning;
 const P = CONTENT.packages;
 const coucou = CONTENT.aircraft.coucou;
-
-/** Pilote robot « un doigt » : passe les obstacles proches, suit une pente vers le point visé. */
-function deliver(orderId: string, planeId: string, touchX: number) {
-  const order = CONTENT.orders.find((o) => o.id === orderId)!;
-  const level = CONTENT.levels[order.levelId];
-  const s = new FlightSession({
-    def: CONTENT.aircraft[planeId], level, tuning: T, surfaces: CONTENT.surfaces, thresholds: CONTENT.landing,
-    stabilize: true, autoThrottle: true, firstArrival: false, arcade: true, cargo: P[order.packageId],
-  });
-  for (let i = 0; i < 60 * 150 && s.phase !== 'ended'; i++) {
-    const clear = Math.max(0, ...level.obstacles.filter((o) => o.x + o.w > s.state.x && o.x < s.state.x + 30 && o.x < touchX).map((o) => o.h + 3));
-    const want = Math.max(clear, Math.min(45, (touchX - s.state.x) * 0.09));
-    const press = s.phase === 'ground' ? true : s.altitude < want - 2;
-    const dive = !press && s.phase === 'flying' && s.altitude > want + 6;
-    s.step({ pitch: 0, press, dive });
-  }
-  return s.result!;
-}
 
 describe('le colis modifie vraiment l\'avion (D17/D18)', () => {
   it('le colis ajoute sa masse et recule ou avance le centre de gravité', () => {
@@ -119,5 +102,39 @@ describe('équité : chaque commande est réussissable avec au moins un avion', 
       );
     expect(best('albatros')).toBeGreaterThanOrEqual(4);
     expect(best('fusee')).toBeLessThan(best('albatros'));
+  });
+});
+
+describe('obstacles en vol (retour de test v0.6 : « il faut ajouter des obstacles »)', () => {
+  it('chaque choc abîme un colis fragile ; un colis normal résiste à un choc', () => {
+    const eggs = computeDelivery({ pkg: P.oeufs, grade: 'PERFECT', validated: true, progression: 1, bonus: 0, seed: 0, hits: 1 });
+    const box = computeDelivery({ pkg: P.carton, grade: 'PERFECT', validated: true, progression: 1, bonus: 0, seed: 0, hits: 1 });
+    expect(eggs.condition).toBe('cabosse');
+    expect(eggs.tip).toBe(0);
+    expect(box.condition).toBe('intact');
+  });
+
+  it("le jet de la baleine n'est actif qu'une partie du temps (prévisible)", async () => {
+    const { geyserActive } = await import('../src/sim/world');
+    const g = CONTENT.levels.cocotte.geysers![0];
+    const samples = Array.from({ length: 90 }, (_, i) => geyserActive(g, (i / 90) * g.period));
+    expect(samples.some((a) => a > 0.9)).toBe(true);
+    expect(samples.filter((a) => a === 0).length).toBeGreaterThan(40);
+  });
+
+  it("un robot qui ne regarde pas devant lui ne livre pas les œufs intacts (les obstacles comptent)", () => {
+    const order = CONTENT.orders.find((o) => o.id === 'cmd-2')!;
+    const level = CONTENT.levels[order.levelId];
+    const s = new FlightSession({
+      def: CONTENT.aircraft.albatros, level, tuning: T, surfaces: CONTENT.surfaces, thresholds: CONTENT.landing,
+      stabilize: true, autoThrottle: true, firstArrival: false, arcade: true, cargo: P.oeufs,
+    });
+    for (let i = 0; i < 60 * 150 && s.phase !== 'ended'; i++) {
+      const want = Math.max(0, Math.min(45, (1925 - s.state.x) * 0.09));
+      const press = s.phase === 'ground' ? true : s.altitude < want - 2;
+      s.step({ pitch: 0, press, dive: s.phase === 'rolling' });
+    }
+    const d = s.result!.delivery!;
+    expect(d.status === 'livre' && d.condition === 'intact').toBe(false);
   });
 });

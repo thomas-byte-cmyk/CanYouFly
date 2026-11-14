@@ -6,6 +6,7 @@ import { PauseScene } from './game/scenes/PauseScene';
 import { ResultsScene } from './game/scenes/ResultsScene';
 import { OrderScene } from './game/scenes/OrderScene';
 import { SelectScene } from './game/scenes/SelectScene';
+import { game as gameState } from './game/state';
 
 // Pivot D17 : la partie commence par la lecture de la commande (écran court, gros bouton « LIVRER »).
 const game = new Phaser.Game({
@@ -29,4 +30,5 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Accès de débogage depuis la console du navigateur.
-(window as unknown as { game: Phaser.Game }).game = game;
+(window as unknown as { game: Phaser.Game; state: typeof gameState }).game = game;
+(window as unknown as { state: typeof gameState }).state = gameState;

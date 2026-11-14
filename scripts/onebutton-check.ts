@@ -18,7 +18,7 @@ function fly(touchX: number, slope: number, cruiseAlt: number) {
     if (press && !last) presses++;
     last = press;
     // Pique (pouce gauche / ↓) si l'avion est nettement trop haut par rapport à la pente visée.
-    const dive = !press && s.phase === 'flying' && s.altitude > want + 6;
+    const dive = s.phase === 'rolling' || (!press && s.phase === 'flying' && s.altitude > want + 6);
     s.step({ pitch: 0, press, dive });
     if (process.env.TRACE && i % 60 === 0) console.log(`  t=${(i/60)|0} x=${st.x.toFixed(0)} alt=${s.altitude.toFixed(1)} vx=${st.vx.toFixed(1)} vy=${st.vy.toFixed(1)} θ=${(st.theta*57.3).toFixed(1)} press=${press} thr=${s.throttle.toFixed(2)} ${s.phase}`);
   }

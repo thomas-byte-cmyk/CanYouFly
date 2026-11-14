@@ -63,6 +63,8 @@ export interface Tuning {
   approachSpeed: number;
   flapsDrag: number;
   pitchRampTime: number;
+  /** Freins : coefficient automatique après le contact, et quand le joueur freine. */
+  brakes: { auto: number; player: number };
   /** Effet de sol : coussin d'air près du sol qui adoucit la fin de descente. */
   groundEffect: { height: number; liftBoost: number; cushion: number };
   /**
@@ -106,7 +108,8 @@ export interface FlightInput {
   pitch: number;
   /** 0 … 1. */
   throttle: number;
-  brake: boolean;
+  /** Freinage au sol : false/0 = aucun, 1 = freins pleins (peut dépasser 1). */
+  brake: boolean | number;
 }
 
 export interface FlightState {

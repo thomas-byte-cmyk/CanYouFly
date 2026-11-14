@@ -16,7 +16,7 @@ function flyTo(id: string, touchX: number) {
   for (let i = 0; i < 60 * 150 && s.phase !== 'ended'; i++) {
     const want = Math.min(60, (touchX - s.state.x) * 0.09);
     const press = s.phase === 'ground' ? true : s.altitude < want - 2;
-    const dive = !press && s.phase === 'flying' && s.altitude > want + 6;
+    const dive = s.phase === 'rolling' || (!press && s.phase === 'flying' && s.altitude > want + 6);
     s.step({ pitch: 0, press, dive });
   }
   return s.result!;
