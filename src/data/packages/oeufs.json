@@ -1,0 +1,36 @@
+{
+  "id": "oeufs",
+  "name": "Douze œufs",
+  "icon": "🥚",
+  "mass": 10,
+  "slotX": 0.2,
+  "drag": 0,
+  "fragility": 0.5,
+  "price": 80,
+  "tip": 30,
+  "tags": [
+    "fragile"
+  ],
+  "reviews": {
+    "parfait": [
+      "Douze œufs, zéro fissure. Mes poules sont jalouses.",
+      "Livraison parfaite. Je vais faire une omelette, mais exprès cette fois."
+    ],
+    "intact": [
+      "Œufs intacts. Un seul a l'air traumatisé."
+    ],
+    "cabosse": [
+      "Trois œufs fêlés. J'ai fait des œufs brouillés, je n'avais pas le choix."
+    ],
+    "miettes": [
+      "J'ai commandé des œufs, j'ai reçu une omelette.",
+      "Les œufs sont arrivés déjà battus. Merci ?"
+    ],
+    "plouf": [
+      "Œufs livrés à la mer. Les poissons ont fait un brunch."
+    ],
+    "refuse": [
+      "Mes œufs sont quelque part dans l'archipel. Comme ma patience."
+    ]
+  }
+}

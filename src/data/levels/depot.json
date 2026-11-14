@@ -1,0 +1,164 @@
+{
+ "id": "depot",
+ "from": "Entrepôt LivrÎle",
+ "to": "Île du Dépôt",
+ "kmPerUnit": 0.012,
+ "reward": 40,
+ "startX": 10,
+ "destinationX": 1160,
+ "approachStartX": 780,
+ "worldStart": -300,
+ "worldEnd": 2000,
+ "ground": [
+  {
+   "x0": -300,
+   "x1": -40,
+   "surface": "sand"
+  },
+  {
+   "x0": -40,
+   "x1": 300,
+   "surface": "dirt"
+  },
+  {
+   "x0": 300,
+   "x1": 330,
+   "surface": "sand"
+  },
+  {
+   "x0": 330,
+   "x1": 980,
+   "surface": "water"
+  },
+  {
+   "x0": 980,
+   "x1": 1020,
+   "surface": "sand"
+  },
+  {
+   "x0": 1020,
+   "x1": 1280,
+   "surface": "dirt"
+  },
+  {
+   "x0": 1280,
+   "x1": 1330,
+   "surface": "sand"
+  },
+  {
+   "x0": 1330,
+   "x1": 2000,
+   "surface": "water"
+  }
+ ],
+ "zones": [
+  {
+   "id": "piste-depot",
+   "name": "Piste du Dépôt",
+   "x0": 1020,
+   "x1": 1280,
+   "kind": "standard",
+   "zoneFactor": 1.0,
+   "arrival": true,
+   "difficulty": 1
+  }
+ ],
+ "obstacles": [
+  {
+   "type": "hut",
+   "x": -120,
+   "w": 40,
+   "h": 16
+  },
+  {
+   "type": "palm",
+   "x": -170,
+   "w": 8,
+   "h": 18
+  },
+  {
+   "type": "palm",
+   "x": -60,
+   "w": 8,
+   "h": 15
+  },
+  {
+   "type": "hut",
+   "x": 1290,
+   "w": 30,
+   "h": 14
+  },
+  {
+   "type": "palm",
+   "x": 1322,
+   "w": 8,
+   "h": 16
+  },
+  {
+   "type": "palm",
+   "x": 990,
+   "w": 7,
+   "h": 9
+  }
+ ],
+ "wind": [],
+ "updrafts": [],
+ "rings": [
+  {
+   "x": 520,
+   "y": 40,
+   "r": 9,
+   "chain": "A"
+  },
+  {
+   "x": 580,
+   "y": 44,
+   "r": 9,
+   "chain": "A"
+  },
+  {
+   "x": 640,
+   "y": 46,
+   "r": 9,
+   "chain": "A"
+  }
+ ],
+ "bolts": [
+  {
+   "x": 720,
+   "y": 42
+  },
+  {
+   "x": 734,
+   "y": 42
+  },
+  {
+   "x": 748,
+   "y": 42
+  },
+  {
+   "x": 762,
+   "y": 42
+  },
+  {
+   "x": 776,
+   "y": 42
+  },
+  {
+   "x": 790,
+   "y": 42
+  }
+ ],
+ "movers": [],
+ "landmarks": [
+  {
+   "type": "sign",
+   "x": 250,
+   "label": "LivrÎle"
+  },
+  {
+   "type": "windsock",
+   "x": 1026
+  }
+ ]
+}

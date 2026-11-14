@@ -55,6 +55,18 @@ export function drawWorld(
         g.fillStyle(C.soilDark, 1).fillRect(x0, 0, w, DEPTH);
         g.fillStyle(C.forestDark, 1).fillRect(x0, -4, w, 16);
         break;
+      case 'sand':
+        g.fillStyle(0xd8b56f, 1).fillRect(x0, 0, w, DEPTH);
+        g.fillStyle(0xf2dca0, 1).fillRect(x0, -2, w, 12);
+        g.fillStyle(0xe6c886, 1);
+        for (let x = x0 + 8; x < x0 + w - 8; x += 30) g.fillCircle(x, 5, 2);
+        break;
+      case 'dirt':
+        g.fillStyle(0xb5895a, 1).fillRect(x0, 0, w, DEPTH);
+        g.fillStyle(0x9c7448, 1).fillRect(x0, -2, w, 10);
+        g.fillStyle(0xe8d5a8, 1);
+        for (let x = x0 + 10; x < x0 + w - 30; x += 60) g.fillRect(x, 2, 26, 2);
+        break;
       case 'city':
         g.fillStyle(C.stone, 1).fillRect(x0, 0, w, DEPTH);
         g.fillStyle(C.stoneLight, 1).fillRect(x0, -2, w, 8);
@@ -173,6 +185,32 @@ function drawObstacle(g: Phaser.GameObjects.Graphics, o: Obstacle): void {
       g.fillStyle(C.cream, 1).fillRect(x + w * 0.35, -h * 0.45, w * 0.3, h * 0.45);
       break;
     }
+    case 'palm': {
+      // Tronc incurvé + palmes.
+      g.lineStyle(Math.max(6, w * 0.25), 0x8a5a32, 1);
+      g.beginPath();
+      g.moveTo(x + w / 2, 0);
+      g.lineTo(x + w * 0.65, -h * 0.5);
+      g.lineTo(x + w * 0.45, -h);
+      g.strokePath();
+      const cx = x + w * 0.45;
+      const cy = -h;
+      g.fillStyle(0x3f9a4a, 1).lineStyle(2.5, C.ink, 1);
+      for (const a of [-2.6, -1.9, -1.2, -0.5, 0.2]) {
+        const ex = cx + Math.cos(a) * w * 2.2;
+        const ey = cy + Math.sin(a) * w * 1.2 + w * 0.6;
+        g.fillTriangle(cx, cy, ex, ey, cx + Math.cos(a + 0.3) * w * 1.2, cy + Math.sin(a + 0.3) * w * 0.7 + w * 0.4);
+        g.strokeTriangle(cx, cy, ex, ey, cx + Math.cos(a + 0.3) * w * 1.2, cy + Math.sin(a + 0.3) * w * 0.7 + w * 0.4);
+      }
+      g.fillStyle(0x7a4e2a, 1).fillCircle(cx + 3, cy + 4, 4);
+      break;
+    }
+    case 'hut': {
+      g.fillStyle(0xd9a86a, 1).fillRect(x, -h * 0.65, w, h * 0.65).strokeRect(x, -h * 0.65, w, h * 0.65);
+      g.fillStyle(0xc8a24a, 1).fillTriangle(x - 8, -h * 0.65, x + w / 2, -h, x + w + 8, -h * 0.65).strokeTriangle(x - 8, -h * 0.65, x + w / 2, -h, x + w + 8, -h * 0.65);
+      g.fillStyle(0x6e4630, 1).fillRect(x + w * 0.38, -h * 0.4, w * 0.24, h * 0.4);
+      break;
+    }
     case 'fence':
       g.fillStyle(0xa0774d, 1);
       g.fillRect(x, -h, w, h).strokeRect(x, -h, w, h);
@@ -214,7 +252,7 @@ function drawZone(scene: Phaser.Scene, g: Phaser.GameObjects.Graphics, z: Landin
     g.strokeTriangle(fx, -70, fx + (fx === x0 ? 30 : -30), -60, fx, -50);
   }
   const stars = '★'.repeat(z.difficulty);
-  const label = z.arrival ? `${stars} ${z.name}` : `${stars} ${z.name} (hors Reims)`;
+  const label = z.arrival ? `${stars} ${z.name}` : `${z.name}`;
   scene.add
     .text((x0 + x1) / 2, -110, label, textStyle(20, CSS.ink, { backgroundColor: '#fdf3e1', padding: { x: 8, y: 4 } }))
     .setOrigin(0.5);

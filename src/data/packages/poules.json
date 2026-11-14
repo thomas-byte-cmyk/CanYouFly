@@ -1,0 +1,39 @@
+{
+  "id": "poules",
+  "name": "Trois poules",
+  "icon": "🐔",
+  "mass": 18,
+  "slotX": -0.4,
+  "drag": 0.02,
+  "fragility": 0.8,
+  "shifting": {
+    "amp": 1.8,
+    "period": 2.4
+  },
+  "price": 70,
+  "tip": 20,
+  "tags": [
+    "bouge"
+  ],
+  "reviews": {
+    "parfait": [
+      "Lundi, Mardi et Pas-Toucher vont bien. Elles veulent refaire un tour.",
+      "Poules livrées calmes. Plus calmes que moi."
+    ],
+    "intact": [
+      "Les poules vont bien. Elles ne veulent plus jamais en parler."
+    ],
+    "cabosse": [
+      "Les poules sont secouées. Elles pondent des œufs brouillés."
+    ],
+    "miettes": [
+      "Les poules ont démissionné. Elles cherchent un autre éleveur."
+    ],
+    "plouf": [
+      "Les poules savent nager, on l'a découvert aujourd'hui. Elles ne te remercient pas."
+    ],
+    "refuse": [
+      "Les poules sont descendues au mauvais endroit. Elles y ont ouvert un café."
+    ]
+  }
+}

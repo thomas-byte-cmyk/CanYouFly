@@ -1,0 +1,26 @@
+[
+  {
+    "id": "cmd-1",
+    "packageId": "carton",
+    "levelId": "depot",
+    "client": "Le chef d'entrepôt",
+    "title": "Livraison test",
+    "message": "Livraison test. Si tu le casses, on fera semblant que c'était un test."
+  },
+  {
+    "id": "cmd-2",
+    "packageId": "oeufs",
+    "levelId": "cocotte",
+    "client": "Mme Plumard, éleveuse de poules",
+    "title": "Œufs en urgence",
+    "message": "Mes poules sont en grève. Je fais venir des œufs par avion. Ne me jugez pas."
+  },
+  {
+    "id": "cmd-3",
+    "packageId": "poules",
+    "levelId": "cocotte",
+    "client": "Mme Plumard, éleveuse de poules",
+    "title": "Retour des grévistes",
+    "message": "Elles s'appellent Lundi, Mardi et Pas-Toucher. Elles ne restent jamais en place."
+  }
+]

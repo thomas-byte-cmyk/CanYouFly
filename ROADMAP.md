@@ -13,7 +13,7 @@
 **Pivot « livreur de colis aux îles »** ✅ *(étape A, 14/11/2026 : conception sans code)*
 - Document de pivot, décisions D17–D20, 10 exemples de commandes pour valider le ton.
 
-**2b. v0.6 « Première livraison »** *(≈ 6–9 j — attend le feu vert)*
+**2b. v0.6 « Première livraison »** ✅ *(14/11/2026)*
 - 2 îles (Dépôt, Cocotte), 3 colis (carton, œufs fragiles, poules qui bougent).
 - Colis chargé = masse, centre de gravité et traînée en plus : les barres des 3 avions changent.
 - Écran de commande (pictos + message drôle), écran « Note client » (étoiles, avis, état du colis, paiement).
