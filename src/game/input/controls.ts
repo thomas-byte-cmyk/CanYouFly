@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
-export type TouchScheme = 'stick' | 'buttons';
+/** onebutton (défaut) : appuyer = monter ; stick / buttons : manche + gaz (option, `?controls=stick`). */
+export type TouchScheme = 'onebutton' | 'stick' | 'buttons';
 
 /**
  * Commandes clavier + tactile (docs/PHYSICS_AND_CONTROLS.md §6).
@@ -10,6 +11,11 @@ export type TouchScheme = 'stick' | 'buttons';
  */
 export class Controls {
   pitch = 0;
+  /** Mode un doigt : appuyé en ce moment (écran, souris, Espace, ↑). */
+  press = false;
+  /** Mode un doigt : ↓ pour plonger (optionnel, clavier). */
+  dive = false;
+  private pressPointers = new Set<number>();
   /** Valeur manuelle des gaz si le joueur a pris la main, sinon undefined (gaz automatiques). */
   manualThrottle: number | undefined;
   stick: { ox: number; oy: number; x: number; y: number } | null = null;
@@ -29,7 +35,8 @@ export class Controls {
 
   constructor(scene: Phaser.Scene) {
     this.isTouch = scene.sys.game.device.input.touch;
-    this.scheme = new URLSearchParams(window.location.search).get('touch') === 'buttons' ? 'buttons' : 'stick';
+    const q = new URLSearchParams(window.location.search);
+    this.scheme = q.get('touch') === 'buttons' ? 'buttons' : q.get('controls') === 'stick' ? 'stick' : 'onebutton';
     const kb = scene.input.keyboard!;
     const K = Phaser.Input.Keyboard.KeyCodes;
     this.keys = kb.addKeys(
@@ -92,6 +99,11 @@ export class Controls {
     }
     if (this.buttonPitch !== 0) p = this.buttonPitch;
     this.pitch = p;
+    if (this.scheme === 'onebutton') {
+      this.press = this.pressPointers.size > 0 || k.up.isDown || k.w.isDown || k.z.isDown || k.space.isDown;
+      this.dive = !this.press && (k.down.isDown || k.s.isDown);
+      return;
+    }
 
     const up = k.right.isDown || k.d.isDown;
     const down = k.left.isDown || k.a.isDown || k.q.isDown;
@@ -112,6 +124,11 @@ export class Controls {
   }
 
   private onDown(p: Phaser.Input.Pointer): void {
+    if (this.scheme === 'onebutton') {
+      // Tout l'écran est un bouton, sauf le bouton pause (en haut à droite).
+      if (!(p.x > 1140 && p.y < 100)) this.pressPointers.add(p.id);
+      return;
+    }
     if (!this.isTouch && !p.wasTouch) return;
     if (this.inSlider(p) && this.throttlePointer === null) {
       this.throttlePointer = p.id;
@@ -140,6 +157,7 @@ export class Controls {
   }
 
   private onUp(p: Phaser.Input.Pointer): void {
+    this.pressPointers.delete(p.id);
     if (p.id === this.throttlePointer) this.throttlePointer = null;
     if (p.id === this.stickPointer) {
       this.stickPointer = null;

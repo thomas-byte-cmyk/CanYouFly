@@ -101,7 +101,8 @@ export class HudScene extends Phaser.Scene {
 
     // Curseur des gaz (toujours affiché : il montre aussi l'état des gaz auto au clavier).
     const sl = this.controls.slider;
-    const showSlider = this.controls.isTouch;
+    const oneButton = this.controls.scheme === 'onebutton';
+    const showSlider = this.controls.isTouch && !oneButton;
     const sx = showSlider ? sl.x : 24;
     const top = showSlider ? sl.top : 470;
     const bottom = showSlider ? sl.bottom : 640;
@@ -112,11 +113,11 @@ export class HudScene extends Phaser.Scene {
     g.lineStyle(3, C.ink, 1).strokeRoundedRect(sx, top, w, bottom - top, 10);
     this.throttleLabel.setPosition(sx + w / 2, bottom + 4).setText(st.fuel <= 0 ? 'PANNE' : s.autoThrottle ? 'GAZ AUTO' : `GAZ ${Math.round(th * 100)}%`);
     if (!showSlider) this.throttleLabel.setPosition(sx + w + 46, bottom - 20);
-    this.autoButton.setVisible(!s.autoThrottle);
+    this.autoButton.setVisible(!s.autoThrottle && !oneButton);
     if (!showSlider) this.autoButton.setPosition(sx + w + 46, top + 10).setText('AUTO (T)');
 
     // Manche tactile.
-    if (this.controls.isTouch) {
+    if (this.controls.isTouch && !oneButton) {
       if (this.controls.scheme === 'buttons') {
         const b = this.controls.buttons;
         for (const [y, label] of [[b.up, '▲'], [b.down, '▼']] as const) {
@@ -153,7 +154,8 @@ export class HudScene extends Phaser.Scene {
         .setText(ahead.map((z) => `${'★'.repeat(z.difficulty)} ${z.name} : ${z.x0 > st.x ? `${((z.x0 - st.x) * lvl.kmPerUnit).toFixed(1).replace('.', ',')} km` : 'dessous !'}`).join('\n'));
 
       // Rappel d'arrondi : près du sol et descente trop rapide.
-      const needFlare = s.altitude < 8 && sink > tol * 0.55 && this.controls.pitch <= 0;
+      // En mode un doigt, l'arrondi est automatique : pas de rappel.
+      const needFlare = !oneButton && s.altitude < 8 && sink > tol * 0.55 && this.controls.pitch <= 0;
       this.flare.setText(needFlare && Math.floor(this.time.now / 200) % 2 === 0 ? (this.controls.isTouch ? '↑ RELÈVE LE NEZ (pouce vers le haut) !' : '↑ RELÈVE LE NEZ !') : '');
     } else {
       this.sinkText.setVisible(false);

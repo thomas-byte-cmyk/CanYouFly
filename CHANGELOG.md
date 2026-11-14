@@ -4,6 +4,14 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Non publié]
 
+## [0.4.0] — 14/11/2026 — Commande à un doigt
+Retour : « les commandes sont encore trop dures, mon fils (12 ans et +) a essayé, pas assez intuitif ».
+- **Nouvelle commande par défaut (décision D16)** : tout l'écran est un bouton. Appuyer (doigt, clic, Espace ou ↑) = monter ; relâcher = redescendre doucement ; près du sol, arrondi automatique. ↓ (clavier) = plonger, en option.
+- Gaz entièrement automatiques ; aérofreins automatiques en approche (l'avion ne « flotte » plus et ne sort plus de la zone).
+- En approche, la trajectoire prévue montre ce qui se passe **si tu relâches maintenant**.
+- L'ancien manche + gaz reste disponible avec `?controls=stick` à la fin de l'adresse.
+- 4 nouveaux tests (34 au total) ; outil `scripts/onebutton-check.ts`. Vérifié dans le navigateur : PERFECT sur la piste de Reims avec la seule touche Espace.
+
 ## [0.3.0] — 13/11/2026 — Pilotage arcade
 Retour : « je n'arrive toujours pas à atterrir, il y a trop d'inertie quand on va en haut et en bas ».
 - Mesure : en mode simulation, 0,5 s d'appui ne levait le nez que de ~3°, avec un retard de près d'1 s.

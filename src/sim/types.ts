@@ -68,6 +68,11 @@ export interface Tuning {
    * construction reste perceptible via `natural` (tendance naturelle, en fraction de commande).
    */
   arcade: { pitchRateDeg: number; response: number; natural: number; grip: number };
+  /**
+   * Commande à un bouton (par défaut) : appuyer = monter (climbDeg), relâcher = descente douce
+   * (glideDeg), plongée optionnelle (diveDeg), arrondi automatique sous flareHeight (flareDeg).
+   */
+  oneButton: { climbDeg: number; glideDeg: number; diveDeg: number; flareHeight: number; flareDeg: number; gain: number };
   assist: { extraDamping: number; alphaHoldGain: number };
   ground: { pitchMin: number; pitchMax: number };
 }
