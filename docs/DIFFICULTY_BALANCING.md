@@ -1,5 +1,7 @@
 # DIFFICULTY_BALANCING — Courbe de difficulté et méthode d'équilibrage
 
+> ⚠️ **Pivot du 14/11/2026 (D17)** : le sujet est devenu « Pip, livreur de colis aux îles ». Les parties qui parlent de villes européennes, de Paris → Istanbul ou de souvenirs de ville sont remplacées par `docs/PIVOT_LIVREUR_TROPICAL.md`. Le reste (mécaniques, équilibrage, monétisation, technique) reste valable.
+
 > Statut : **proposition Phase 1 — à valider**. Auteur : Agent 4 (Monetization & Game Economy).
 > Chiffres = **valeurs initiales**, destinées à vivre dans des fichiers de configuration éditables. Les unités définitives (m, m/s, degrés « jeu ») seront fixées par l'Agent 1 dans `TECHNICAL_ARCHITECTURE.md`.
 

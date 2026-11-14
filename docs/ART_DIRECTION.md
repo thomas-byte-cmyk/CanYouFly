@@ -1,5 +1,7 @@
 # DIRECTION ARTISTIQUE — CAN YOU FLY?
 
+> ⚠️ **Pivot du 14/11/2026 (D17)** : le sujet est devenu « Pip, livreur de colis aux îles ». Les parties qui parlent de villes européennes, de Paris → Istanbul ou de souvenirs de ville sont remplacées par `docs/PIVOT_LIVREUR_TROPICAL.md`. Le reste (mécaniques, équilibrage, monétisation, technique) reste valable.
+
 > Statut : **proposition Phase 1** — le choix de la piste artistique nécessite la validation de l'utilisateur.
 > Responsable : Agent 2. Liés : `PILOT_CHARACTER.md`, `CUSTOMIZATION_SYSTEM.md`, `WORLD_MAP.md`, `AUDIO_DESIGN.md`.
 

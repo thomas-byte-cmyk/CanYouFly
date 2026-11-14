@@ -1,5 +1,7 @@
 # Dossier de conception — CAN YOU FLY? (Phase 1)
 
+> ⚠️ **Pivot du 14/11/2026 (D17)** : le sujet est devenu « Pip, livreur de colis aux îles ». Les parties qui parlent de villes européennes, de Paris → Istanbul ou de souvenirs de ville sont remplacées par `docs/PIVOT_LIVREUR_TROPICAL.md`. Le reste (mécaniques, équilibrage, monétisation, technique) reste valable.
+
 > **Statut : ✅ CONCEPTION VALIDÉE le 13/11/2026** (décisions D1–D15, voir `DECISIONS.md`). Aucun code n'a été écrit.
 > Ce document est la **synthèse** du chef de projet. Le détail de chaque domaine est dans les documents référencés.
 > Date : 13/11/2026.

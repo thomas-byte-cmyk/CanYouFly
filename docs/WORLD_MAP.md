@@ -1,5 +1,7 @@
 # CARTE DU MONDE & DESTINATIONS — CAN YOU FLY?
 
+> ⚠️ **Obsolète depuis le pivot du 14/11/2026 (D17)** : la carte Paris → Istanbul est remplacée par l'archipel de 9 îles. Voir `docs/PIVOT_LIVREUR_TROPICAL.md` §6. Ce document sera réécrit avec la v0.6.
+
 > Statut : **proposition Phase 1** — l'ordre des villes nécessite la validation de l'utilisateur.
 > Responsable : Agent 2. Liés : `GAME_DESIGN.md`, `PROGRESSION_SYSTEM.md`, `DIFFICULTY_BALANCING.md`, `ART_DIRECTION.md`.
 

@@ -2,7 +2,10 @@
 
 _Dernière mise à jour : 13/11/2026_
 
-## Phase actuelle : 🟢 Phase 2 — Jalon « Sensation de vol » livré, **en attente de vos retours de jeu**
+## 🔀 Pivot du 14/11/2026 : « Pip, livreur de colis aux îles » (D17–D20)
+Étape A (conception sans code) **terminée** → [`docs/PIVOT_LIVREUR_TROPICAL.md`](docs/PIVOT_LIVREUR_TROPICAL.md). **En attente du feu vert pour la v0.6 « Première livraison ».**
+
+## Phase actuelle (avant pivot) : 🟢 Phase 2 — Jalon « Sensation de vol » livré, **en attente de vos retours de jeu**
 
 | Phase | Statut |
 |---|---|

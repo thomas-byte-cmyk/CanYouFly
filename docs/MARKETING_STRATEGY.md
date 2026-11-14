@@ -1,5 +1,7 @@
 # MARKETING_STRATEGY — CAN YOU FLY? (titre provisoire)
 
+> ⚠️ **Pivot du 14/11/2026 (D17)** : le sujet est devenu « Pip, livreur de colis aux îles ». Les parties qui parlent de villes européennes, de Paris → Istanbul ou de souvenirs de ville sont remplacées par `docs/PIVOT_LIVREUR_TROPICAL.md`. Le reste (mécaniques, équilibrage, monétisation, technique) reste valable.
+
 > **Auteur :** Agent 3 — Marketing & Product Growth · **Phase :** 1 (conception) · **Date :** 2026-11-13
 > **Statut :** proposition, à valider par le porteur du projet.
 
