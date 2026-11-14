@@ -18,7 +18,7 @@ Argumentation : [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md). Décisions p
 |---|---|---|
 | D1 | Construction à emplacements (slots) : fuselage + 10 emplacements, aile principale en 3 positions | ✅ |
 | D2 | Premier vol sans construction (avion « Le Coucou »), hangar ouvert après le 1er atterrissage | ✅ |
-| D3 | Tangage + gaz manuels (gaz auto pendant le tutoriel), paysage uniquement sur mobile | ✅ |
+| D3 | Tangage + gaz manuels (gaz auto pendant le tutoriel), paysage uniquement sur mobile | ✅ → remplacée par D16 pour la commande (paysage conservé) |
 | D4 | Pas d'upgrades de stats : progression = nouvelles pièces différentes, villes, cosmétiques | ✅ |
 | D5 | Étape validée = arrêt dans la zone d'arrivée hors eau, même en crash ; qualité = étoiles (1–3) + Boulons | ✅ (sans préférence exprimée → recommandation retenue, révisable après playtests) |
 | D6 | 8 étapes : Paris → Reims (tuto) → Bruxelles → Amsterdam → Londres → Berlin → Rome → Athènes → Istanbul | ✅ |
@@ -31,6 +31,7 @@ Argumentation : [`docs/DESIGN_DOSSIER.md`](docs/DESIGN_DOSSIER.md). Décisions p
 | D13 | « CAN YOU FLY? » = nom de code ; nom final choisi en Phase 4 | ✅ |
 | D14 | Jalon « Sensation de vol » avant le prototype complet | ✅ |
 | D15 | Candidature Poki for Developers dès le prototype jouable ; exclusivité web Poki acceptée | ✅ |
+| D16 | *(14/11/2026, après 3 tests)* **Commande à un doigt** par défaut : appuyer = monter, relâcher = descendre doucement, arrondi et gaz automatiques. Remplace D3 (tangage + gaz manuels), qui reste disponible en option | ✅ |
 
 ## Décisions techniques prises par le chef de projet (révisables)
 

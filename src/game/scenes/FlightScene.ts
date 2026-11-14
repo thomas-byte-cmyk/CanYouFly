@@ -101,7 +101,16 @@ export class FlightScene extends Phaser.Scene {
     this.hud = this.scene.get('hud') as HudScene;
     this.scene.bringToTop('hud');
     this.hud.events.once('create', () => {
-      this.hud.showHint(this.hud.controls.isTouch ? 'Glisse ton pouce droit vers le HAUT\npour décoller' : 'Maintiens ↑ pour décoller');
+      const c = this.hud.controls;
+      this.hud.showHint(
+        c.scheme === 'onebutton'
+          ? c.isTouch
+            ? 'Garde le doigt appuyé sur l\'écran\npour décoller et monter'
+            : 'Maintiens ESPACE (ou clic) pour décoller et monter'
+          : c.isTouch
+            ? 'Glisse ton pouce droit vers le HAUT\npour décoller'
+            : 'Maintiens ↑ pour décoller',
+      );
       this.hud.bus.on('pause', () => this.pause());
       this.hud.bus.on('restart', () => this.restart());
     });
@@ -135,7 +144,8 @@ export class FlightScene extends Phaser.Scene {
     if (!this.ended) {
       this.acc += Math.min(delta, 100) / 1000;
       while (this.acc >= FIXED_DT) {
-        s.step({ pitch: controls.pitch, manualThrottle: controls.manualThrottle });
+        if (controls.scheme === 'onebutton') s.step({ pitch: 0, press: controls.press, dive: controls.dive });
+        else s.step({ pitch: controls.pitch, manualThrottle: controls.manualThrottle });
         this.acc -= FIXED_DT;
         if (s.phase === 'ended') break;
       }
@@ -171,7 +181,14 @@ export class FlightScene extends Phaser.Scene {
     const s = this.session;
     if (this.hintStage === 0 && s.hasTakenOff) {
       this.hintStage = 1;
-      this.hud.showHint(this.hud.controls.isTouch ? 'Bravo ! Relâche pour voler droit.\nPouce vers le bas = descendre' : 'Bravo ! Relâche pour voler droit.\n↓ pour descendre');
+      const c = this.hud.controls;
+      this.hud.showHint(
+        c.scheme === 'onebutton'
+          ? 'Bravo ! Appuie = monter, relâche = redescendre doucement'
+          : c.isTouch
+            ? 'Bravo ! Relâche pour voler droit.\nPouce vers le bas = descendre'
+            : 'Bravo ! Relâche pour voler droit.\n↓ pour descendre',
+      );
       this.time.delayedCall(4000, () => this.hintStage === 1 && this.hud.showHint(''));
     }
   }
@@ -207,7 +224,11 @@ export class FlightScene extends Phaser.Scene {
         break;
       case 'approach':
         this.hintStage = 2;
-        this.hud.showHint('Approche de Reims : choisis une zone à drapeaux\net descends doucement');
+        this.hud.showHint(
+          this.hud.controls.scheme === 'onebutton'
+            ? 'Approche de Reims : relâche pour descendre vers une zone à drapeaux.\nL\'avion se pose tout seul en douceur.'
+            : 'Approche de Reims : choisis une zone à drapeaux\net descends doucement',
+        );
         this.hud.showFlash('Volets sortis : l\'avion ralentit', 2200);
         this.time.delayedCall(5000, () => this.hintStage === 2 && this.hud.showHint(''));
         break;
@@ -267,7 +288,7 @@ export class FlightScene extends Phaser.Scene {
     g.clear();
     this.outcomeText.setText('');
     if (this.ended || s.phase !== 'flying' || !s.inApproach) return;
-    const { points, outcome } = s.predict(4);
+    const { points, outcome } = s.predict(4, 6, this.hud.controls.scheme === 'onebutton');
     g.fillStyle(C.white, 0.9);
     for (const p of points) g.fillCircle(p.x * PX, -p.y * PX, 4);
     if (!outcome) return;

@@ -27,5 +27,13 @@
     "response": 0.08,
     "natural": 0.4,
     "grip": 1.8
+  },
+  "oneButton": {
+    "climbDeg": 13,
+    "glideDeg": -6,
+    "diveDeg": -14,
+    "flareHeight": 4,
+    "flareDeg": -2,
+    "gain": 4
   }
 }

@@ -19,10 +19,17 @@ export type EndReason =
 export type PilotState = 'fresh' | 'ruffled' | 'shaken' | 'dazed' | 'soaked';
 
 export interface ControlInput {
-  /** Commande de tangage désirée (−1 … +1), avant rampe. */
+  /** Commande de tangage désirée (−1 … +1), avant rampe (mode manche). */
   pitch: number;
   /** Si défini : le joueur règle les gaz à la main (0 … 1). */
   manualThrottle?: number;
+  /**
+   * Mode « un doigt » (par défaut en jeu) : si défini, remplace `pitch`.
+   * true = appuyé (monter), false = relâché (descente douce + arrondi automatique).
+   */
+  press?: boolean;
+  /** Mode un doigt : plonger (touche ↓, optionnel). */
+  dive?: boolean;
 }
 
 export type SessionEvent =
@@ -94,6 +101,10 @@ export class FlightSession {
   hasTakenOff = false;
   inApproach = false;
   flaps = false;
+  /** Mode un doigt : le joueur appuie en ce moment. */
+  pressing = false;
+  /** La montée initiale est terminée (altitude de sécurité atteinte une fois). */
+  private climbedOnce = false;
   ringsTaken: boolean[];
   boltsTaken: boolean[];
   chainsDone = new Set<string>();
@@ -141,7 +152,9 @@ export class FlightSession {
 
     // Rampe de la commande de tangage (évite les à-coups).
     const rate = dt / t.pitchRampTime;
-    const target = clamp(input.pitch, -1, 1);
+    this.pressing = !!input.press;
+    const wanted = input.press !== undefined ? this.oneButtonPitch(input.press, !!input.dive) : input.pitch;
+    const target = clamp(wanted, -1, 1);
     this.pitch += clamp(target - this.pitch, -rate, rate);
 
     if (input.manualThrottle !== undefined) {
@@ -151,6 +164,12 @@ export class FlightSession {
       this.throttle = this.autoThrottleValue(dt);
     }
 
+    // Volets + aérofreins automatiques : en approche, l'avion est ramené vers sa vitesse d'approche
+    // (sinon il accélère en descente, « flotte » au ras du sol et sort de la zone).
+    if (this.flaps) {
+      const excess = Math.max(0, s.airspeed - t.approachSpeed);
+      this.runtime.extraDrag = t.flapsDrag + 0.05 * excess;
+    }
     const braking = this.phase === 'rolling' && this.throttle < 0.2;
     const info = stepPhysics(s, this.runtime, this.env, { pitch: this.pitch, throttle: this.throttle, brake: braking }, dt);
 
@@ -340,11 +359,38 @@ export class FlightSession {
     this.flaps = true;
   }
 
+  /**
+   * Mode un doigt : transforme « appuyé / relâché » en commande de tangage.
+   * L'avion vise un angle de montée (appuyé) ou de descente douce (relâché) ;
+   * près du sol, au-dessus d'un terrain, il arrondit tout seul.
+   */
+  oneButtonPitch(press: boolean, dive: boolean, st: FlightState = this.state, phase: Phase = this.phase): number {
+    const ob = this.cfg.tuning.oneButton;
+    const DEG = Math.PI / 180;
+    const alt = st.y - this.cfg.def.gear.height - this.env.groundHeightAt(st.x);
+    if (phase === 'ground' || phase === 'rolling') {
+      // Au sol : on cabre seulement une fois la vitesse de rotation atteinte.
+      const vr = this.aggregates.takeoffSpeed * 0.95;
+      return press && st.vx >= vr ? 1 : 0;
+    }
+    let gammaTarget = press ? ob.climbDeg : dive ? ob.diveDeg : ob.glideDeg;
+    if (!press && !dive && alt < ob.flareHeight && st.vy < 0) {
+      const k = Math.max(0, alt) / ob.flareHeight;
+      gammaTarget = ob.flareDeg + (ob.glideDeg - ob.flareDeg) * k;
+    }
+    // Correction sur l'angle de trajectoire réel (la vitesse qui varie ne doit pas faire « flotter »).
+    const gamma = Math.atan2(st.vy, Math.max(1, st.vx));
+    const correction = clamp((gammaTarget * DEG - gamma) * 0.8, -8 * DEG, 8 * DEG);
+    const thetaTarget = gammaTarget * DEG + this.runtime.alphaTrim + correction;
+    return clamp((thetaTarget - st.theta) * ob.gain - st.omega * 0.15, -1, 1);
+  }
+
   private autoThrottleValue(dt: number): number {
     const s = this.state;
     let target: number;
     if (this.phase === 'rolling') return 0;
-    if (!this.hasTakenOff || (!this.inApproach && this.altitude < 35)) target = 1;
+    if (this.altitude > 35) this.climbedOnce = true;
+    if (!this.hasTakenOff || this.pressing || !this.climbedOnce) target = 1;
     else {
       const wanted = this.inApproach ? this.cfg.tuning.approachSpeed : this.cfg.tuning.trimSpeed;
       target = clamp(0.55 + (wanted - s.airspeed) * 0.08, 0, 1);
@@ -405,13 +451,19 @@ export class FlightSession {
    * Trajectoire prévue (aide à l'approche) : même modèle physique, commandes neutres,
    * gaz actuels. Renvoie les points et, si l'avion touche dans l'horizon, le résultat prévu.
    */
-  predict(seconds: number, every = 6): { points: { x: number; y: number }[]; outcome?: { x: number; grade: LandingGrade } } {
+  predict(
+    seconds: number,
+    every = 6,
+    oneButton = false,
+  ): { points: { x: number; y: number }[]; outcome?: { x: number; grade: LandingGrade } } {
     const s: FlightState = { ...this.state };
     const points: { x: number; y: number }[] = [];
     const n = Math.round(seconds / FIXED_DT);
     const gearH = this.cfg.def.gear.height;
     for (let i = 0; i < n; i++) {
-      const info = stepPhysics(s, this.runtime, this.env, { pitch: 0, throttle: this.throttle, brake: false });
+      // En mode un doigt, on prévoit ce qui se passe si le joueur relâche maintenant.
+      const pitch = oneButton ? this.oneButtonPitch(false, false, s, 'flying') : 0;
+      const info = stepPhysics(s, this.runtime, this.env, { pitch, throttle: this.throttle, brake: false });
       if (i % every === 0) points.push({ x: s.x, y: s.y - gearH });
       if (obstacleAt(this.cfg.level, s.x, s.y - gearH) || obstacleAt(this.cfg.level, s.x, s.y)) {
         points.push({ x: s.x, y: s.y - gearH });
