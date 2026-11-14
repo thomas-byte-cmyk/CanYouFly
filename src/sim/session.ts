@@ -1,5 +1,6 @@
 import { clamp, computeAggregates, computeTrim } from './aero';
 import { FIXED_DT, bodyPoint, createState, stepPhysics } from './flight';
+import { type Handling, computeHandling } from './handling';
 import { type LandingGrade, type LandingThresholds, type TouchdownResult, evaluateTouchdown, worstGrade } from './landing';
 import { type Reward, computeReward, starsFor } from './rewards';
 import type { AircraftDef, AircraftRuntime, Env, FlightState, SurfaceProps, SurfaceType, Tuning } from './types';
@@ -93,6 +94,8 @@ const PILOT_BY_GRADE: Record<LandingGrade, PilotState> = {
 export class FlightSession {
   readonly env: Env;
   readonly runtime: AircraftRuntime;
+  /** Caractère de vol calculé à partir des pièces de l'avion. */
+  readonly handling: Handling;
   readonly state: FlightState;
   phase: Phase = 'ground';
   autoThrottle: boolean;
@@ -121,8 +124,17 @@ export class FlightSession {
 
   constructor(readonly cfg: SessionConfig) {
     this.env = createEnv(cfg.level, cfg.tuning, cfg.surfaces);
-    const trim = computeTrim(cfg.def, cfg.def.fuel.capacity, cfg.tuning);
-    this.runtime = { def: cfg.def, trimU: trim.trimU, alphaTrim: trim.alphaTrim, stabilize: cfg.stabilize, extraDrag: 0, arcade: cfg.arcade ?? false };
+    this.handling = computeHandling(cfg.def, cfg.tuning);
+    const trim = computeTrim(cfg.def, cfg.def.fuel.capacity, cfg.tuning, this.handling.cruiseSpeed);
+    this.runtime = {
+      def: cfg.def,
+      trimU: trim.trimU,
+      alphaTrim: trim.alphaTrim,
+      stabilize: cfg.stabilize,
+      extraDrag: 0,
+      arcade: cfg.arcade ?? false,
+      pitchRateScale: this.handling.pitchRateScale,
+    };
     this.state = createState(cfg.level.startX, 0, cfg.def.gear.height, cfg.def.fuel.capacity);
     this.autoThrottle = cfg.autoThrottle;
     this.ringsTaken = cfg.level.rings.map(() => false);
@@ -167,7 +179,7 @@ export class FlightSession {
     // Volets + aérofreins automatiques : en approche, l'avion est ramené vers sa vitesse d'approche
     // (sinon il accélère en descente, « flotte » au ras du sol et sort de la zone).
     if (this.flaps) {
-      const excess = Math.max(0, s.airspeed - t.approachSpeed);
+      const excess = Math.max(0, s.airspeed - this.handling.approachSpeed);
       this.runtime.extraDrag = t.flapsDrag + 0.05 * excess;
     }
     const braking = this.phase === 'rolling' && this.throttle < 0.2;
@@ -352,7 +364,7 @@ export class FlightSession {
   /** Volets automatiques : l'avion se recale sur une vitesse d'approche plus lente (aide arcade). */
   deployFlaps(): void {
     const t = this.cfg.tuning;
-    const trim = computeTrim(this.cfg.def, this.state.fuel, t, t.approachSpeed);
+    const trim = computeTrim(this.cfg.def, this.state.fuel, t, this.handling.approachSpeed);
     this.runtime.trimU = trim.trimU;
     this.runtime.alphaTrim = trim.alphaTrim;
     this.runtime.extraDrag = t.flapsDrag;
@@ -373,10 +385,13 @@ export class FlightSession {
       const vr = this.aggregates.takeoffSpeed * 0.95;
       return press && st.vx >= vr ? 1 : 0;
     }
-    let gammaTarget = press ? ob.climbDeg : dive ? ob.diveDeg : ob.glideDeg;
+    // Les angles dépendent de l'avion : moteur/poids (montée) et finesse (descente).
+    const climb = Math.min(ob.climbDeg, this.handling.climbDeg * 0.9);
+    const glide = -this.handling.glideDeg * 0.8;
+    let gammaTarget = press ? climb : dive ? ob.diveDeg : glide;
     if (!press && !dive && alt < ob.flareHeight && st.vy < 0) {
       const k = Math.max(0, alt) / ob.flareHeight;
-      gammaTarget = ob.flareDeg + (ob.glideDeg - ob.flareDeg) * k;
+      gammaTarget = ob.flareDeg + (glide - ob.flareDeg) * k;
     }
     // Correction sur l'angle de trajectoire réel (la vitesse qui varie ne doit pas faire « flotter »).
     const gamma = Math.atan2(st.vy, Math.max(1, st.vx));
@@ -392,7 +407,7 @@ export class FlightSession {
     if (this.altitude > 35) this.climbedOnce = true;
     if (!this.hasTakenOff || this.pressing || !this.climbedOnce) target = 1;
     else {
-      const wanted = this.inApproach ? this.cfg.tuning.approachSpeed : this.cfg.tuning.trimSpeed;
+      const wanted = this.inApproach ? this.handling.approachSpeed : this.handling.cruiseSpeed;
       target = clamp(0.55 + (wanted - s.airspeed) * 0.08, 0, 1);
     }
     const k = Math.min(1, dt * 2);

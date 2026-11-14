@@ -4,6 +4,7 @@ import { FlightScene } from './game/scenes/FlightScene';
 import { HudScene } from './game/scenes/HudScene';
 import { PauseScene } from './game/scenes/PauseScene';
 import { ResultsScene } from './game/scenes/ResultsScene';
+import { SelectScene } from './game/scenes/SelectScene';
 
 // Jalon « Sensation de vol » : on démarre directement sur la piste (décision D2).
 const game = new Phaser.Game({
@@ -18,7 +19,7 @@ const game = new Phaser.Game({
   fps: { smoothStep: false },
   render: { antialias: true },
   disableContextMenu: true,
-  scene: [BackgroundScene, FlightScene, HudScene, ResultsScene, PauseScene],
+  scene: [BackgroundScene, FlightScene, HudScene, ResultsScene, PauseScene, SelectScene],
 });
 
 // Empêche le défilement de la page par les touches de jeu (exigence Poki).

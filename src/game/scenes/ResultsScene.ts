@@ -84,10 +84,23 @@ export class ResultsScene extends Phaser.Scene {
     card.add(this.add.text(0, 190, advice(r), textStyle(20, CSS.teal, { wordWrap: { width: 980 }, align: 'center' })).setOrigin(0.5, 0));
 
     // Bouton REVOLER (l'interstitiel Poki viendra ici, au clic, en Phase 3).
-    const btn = this.add.text(0, 252, 'REVOLER  ↻', textStyle(34, CSS.cream, { backgroundColor: '#d9573b', padding: { x: 36, y: 10 } })).setOrigin(0.5, 0).setInteractive({ useHandCursor: true });
+    const btn = this.add.text(-170, 252, 'REVOLER  ↻', textStyle(34, CSS.cream, { backgroundColor: '#d9573b', padding: { x: 36, y: 10 } })).setOrigin(0.5, 0).setInteractive({ useHandCursor: true });
     card.add(btn);
     this.tweens.add({ targets: btn, scale: { from: 1, to: 1.06 }, yoyo: true, repeat: -1, duration: 600 });
     const again = () => (this.scene.get('flight') as FlightScene).restart();
+    const change = this.add
+      .text(190, 258, 'CHANGER D\'AVION  ✈', textStyle(26, CSS.cream, { backgroundColor: '#3a9e9a', padding: { x: 22, y: 10 } }))
+      .setOrigin(0.5, 0)
+      .setInteractive({ useHandCursor: true });
+    card.add(change);
+    change.on('pointerdown', () => {
+      this.scene.stop();
+      this.scene.launch('select');
+    });
+    this.input.keyboard!.once('keydown-C', () => {
+      this.scene.stop();
+      this.scene.launch('select');
+    });
     btn.on('pointerdown', again);
     const kb = this.input.keyboard!;
     kb.once('keydown-ENTER', again);

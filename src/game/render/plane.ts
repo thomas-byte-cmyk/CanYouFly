@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import type { FlightState } from '../../sim/types';
+import type { AircraftDef, FlightState } from '../../sim/types';
 import { C, PX } from '../style';
 import { type Expression, drawPilot } from './pilot';
 
 /** Coordonnées locales de l'avion (u) → pixels (y vers le bas). */
 const P = (x: number, y: number) => new Phaser.Math.Vector2(x * PX, -y * PX);
 
-/** Le Coucou, dessiné avec des formes simples (placeholder « Atelier du Dimanche »). */
+/** Avion dessiné avec des formes simples (placeholder « Atelier du Dimanche »), aux couleurs et proportions de sa définition. */
 export class PlaneView {
   readonly root: Phaser.GameObjects.Container;
   private readonly prop: Phaser.GameObjects.Graphics;
@@ -15,8 +15,15 @@ export class PlaneView {
   private expression: Expression | null = null;
   private wobble = 0;
 
-  constructor(scene: Phaser.Scene) {
+  constructor(scene: Phaser.Scene, def?: AircraftDef) {
     this.root = scene.add.container(0, 0);
+    const look = def?.look;
+    const hex = (v: string | undefined, d: number) => (v ? parseInt(v, 16) : d);
+    const bodyColor = hex(look?.body, C.paper);
+    const wingColor = hex(look?.wing, C.yellow);
+    const accent = hex(look?.accent, C.red);
+    const wingK = look?.wingScale ?? 1;
+    const es = look?.engineScale ?? 1;
     const body = scene.add.graphics();
     this.pilot = scene.add.graphics();
     this.prop = scene.add.graphics();
@@ -41,14 +48,14 @@ export class PlaneView {
       P(3.7, 0.85), P(1.2, 1.1), P(-1.2, 0.95), P(-5.7, 0.55), P(-5.9, 0.05),
       P(-1.2, -0.75), P(1.5, -0.85), P(3.7, -0.65),
     ];
-    body.fillStyle(C.paper, 1).fillPoints(fus, true);
-    // Bande rouge.
+    body.fillStyle(bodyColor, 1).fillPoints(fus, true);
+    // Bande décorative.
     const stripe = [P(3.6, 0.1), P(-5.8, 0.25), P(-5.85, 0.0), P(3.6, -0.25)];
-    body.fillStyle(C.red, 1).fillPoints(stripe, true);
+    body.fillStyle(accent, 1).fillPoints(stripe, true);
     body.lineStyle(lw, C.ink, 1).strokePoints(fus, true);
     // Capot moteur.
-    const cowl = [P(3.6, 0.95), P(4.3, 0.7), P(4.3, -0.55), P(3.6, -0.75)];
-    body.fillStyle(C.red, 1).fillPoints(cowl, true).lineStyle(lw, C.ink, 1).strokePoints(cowl, true);
+    const cowl = [P(3.6, 0.95 * es), P(3.6 + 0.7 * es, 0.7 * es), P(3.6 + 0.7 * es, -0.55 * es), P(3.6, -0.75 * es)];
+    body.fillStyle(accent === C.ink ? C.stone : accent, 1).fillPoints(cowl, true).lineStyle(lw, C.ink, 1).strokePoints(cowl, true);
     // Pare-brise.
     const ws = [P(0.9, 1.05), P(1.5, 1.75), P(1.8, 1.7), P(1.5, 1.05)];
     body.fillStyle(0xbfe8f0, 0.9).fillPoints(ws, true).lineStyle(2, C.ink, 1).strokePoints(ws, true);
@@ -61,8 +68,11 @@ export class PlaneView {
     body.lineStyle(2.5, C.ink, 1);
     body.lineBetween(P(-0.2, 0.95).x, P(-0.2, 0.95).y, P(0.1, 2.3).x, P(0.1, 2.3).y);
     body.lineBetween(P(1.6, 1.0).x, P(1.6, 1.0).y, P(1.4, 2.3).x, P(1.4, 2.3).y);
-    const wing = [P(2.4, 2.55), P(1.6, 2.85), P(-0.6, 2.75), P(-0.9, 2.45), P(2.4, 2.3)];
-    body.fillStyle(C.yellow, 1).fillPoints(wing, true).lineStyle(lw, C.ink, 1).strokePoints(wing, true);
+    const wx = (x: number) => 0.75 + (x - 0.75) * wingK;
+    const wing = [P(wx(2.5), 2.6), P(wx(1.7), 3.15), P(wx(-0.6), 3.05), P(wx(-1.0), 2.55), P(wx(2.5), 2.25)];
+    body.fillStyle(wingColor, 1).fillPoints(wing, true).lineStyle(2.5, C.ink, 1).strokePoints(wing, true);
+    // Reflet pour la lisibilité.
+    body.lineStyle(2, C.white, 0.6).lineBetween(P(wx(1.6), 2.95).x, P(wx(1.6), 2.95).y, P(wx(-0.4), 2.85).x, P(wx(-0.4), 2.85).y);
 
     // Moyeu d'hélice.
     body.fillStyle(C.stoneLight, 1).fillCircle(P(4.45, 0.08).x, P(4.45, 0.08).y, 0.32 * PX);

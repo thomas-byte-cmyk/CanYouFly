@@ -1,0 +1,102 @@
+{
+  "id": "albatros",
+  "name": "L'Albatros",
+  "description": "Grandes ailes de planeur, petit moteur. Plane très loin et se pose tout doux, mais monte lentement.",
+  "masses": [
+    {
+      "id": "engine",
+      "mass": 40,
+      "x": 2.4
+    },
+    {
+      "id": "propeller",
+      "mass": 8,
+      "x": 3.1
+    },
+    {
+      "id": "fuselage",
+      "mass": 70,
+      "x": -1.6
+    },
+    {
+      "id": "wing",
+      "mass": 55,
+      "x": 0.5
+    },
+    {
+      "id": "tail",
+      "mass": 12,
+      "x": -5.6
+    },
+    {
+      "id": "gear",
+      "mass": 15,
+      "x": 0.5
+    },
+    {
+      "id": "pilot",
+      "mass": 15,
+      "x": 0.0
+    },
+    {
+      "id": "tank",
+      "mass": 5,
+      "x": 0.0
+    }
+  ],
+  "fuel": {
+    "capacity": 45,
+    "x": 0.0,
+    "burnRate": 0.4
+  },
+  "engine": {
+    "thrustMax": 1000,
+    "propVmax": 75
+  },
+  "drag": {
+    "parasite": 0.22,
+    "inducedK": 0.09
+  },
+  "surfaces": [
+    {
+      "id": "wing",
+      "x": 0.5,
+      "area": 16,
+      "liftSlope": 5.5,
+      "stallAngleDeg": 14,
+      "incidenceDeg": 3
+    },
+    {
+      "id": "stabilizer",
+      "x": -5.6,
+      "area": 3,
+      "liftSlope": 4,
+      "stallAngleDeg": 18,
+      "incidenceDeg": 2.5
+    }
+  ],
+  "pitch": {
+    "authority": 1.6,
+    "damping": 5.0,
+    "inertiaBase": 300
+  },
+  "refChord": 2.4,
+  "gear": {
+    "tolerance": 9,
+    "vhMax": 40,
+    "height": 1.6,
+    "x": 0.5
+  },
+  "geometry": {
+    "noseX": 3.8,
+    "tailX": -6.0,
+    "topY": 1.1
+  },
+  "look": {
+    "body": "0xfdf3e1",
+    "wing": "0x3a9e9a",
+    "accent": "0xf2c94c",
+    "wingScale": 1.45,
+    "engineScale": 0.8
+  }
+}

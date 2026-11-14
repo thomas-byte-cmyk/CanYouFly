@@ -2,24 +2,101 @@
   "id": "coucou",
   "name": "Le Coucou",
   "masses": [
-    { "id": "engine", "mass": 70, "x": 2.6 },
-    { "id": "propeller", "mass": 10, "x": 3.4 },
-    { "id": "fuselage", "mass": 90, "x": -2.1 },
-    { "id": "wing", "mass": 40, "x": 0.8 },
-    { "id": "tail", "mass": 15, "x": -5.2 },
-    { "id": "gear", "mass": 20, "x": 0.6 },
-    { "id": "pilot", "mass": 15, "x": 0.0 },
-    { "id": "tank", "mass": 5, "x": 0.1 }
+    {
+      "id": "engine",
+      "mass": 70,
+      "x": 2.6
+    },
+    {
+      "id": "propeller",
+      "mass": 10,
+      "x": 3.4
+    },
+    {
+      "id": "fuselage",
+      "mass": 90,
+      "x": -2.1
+    },
+    {
+      "id": "wing",
+      "mass": 40,
+      "x": 0.8
+    },
+    {
+      "id": "tail",
+      "mass": 15,
+      "x": -5.2
+    },
+    {
+      "id": "gear",
+      "mass": 20,
+      "x": 0.6
+    },
+    {
+      "id": "pilot",
+      "mass": 15,
+      "x": 0.0
+    },
+    {
+      "id": "tank",
+      "mass": 5,
+      "x": 0.1
+    }
   ],
-  "fuel": { "capacity": 40, "x": 0.1, "burnRate": 0.55 },
-  "engine": { "thrustMax": 1500, "propVmax": 90 },
-  "drag": { "parasite": 0.25, "inducedK": 0.15 },
+  "fuel": {
+    "capacity": 40,
+    "x": 0.1,
+    "burnRate": 0.55
+  },
+  "engine": {
+    "thrustMax": 1500,
+    "propVmax": 90
+  },
+  "drag": {
+    "parasite": 0.25,
+    "inducedK": 0.15
+  },
   "surfaces": [
-    { "id": "wing", "x": 0.8, "area": 10, "liftSlope": 5, "stallAngleDeg": 15, "incidenceDeg": 3 },
-    { "id": "stabilizer", "x": -5.2, "area": 2.5, "liftSlope": 4, "stallAngleDeg": 18, "incidenceDeg": 2.5 }
+    {
+      "id": "wing",
+      "x": 0.8,
+      "area": 10,
+      "liftSlope": 5,
+      "stallAngleDeg": 15,
+      "incidenceDeg": 3
+    },
+    {
+      "id": "stabilizer",
+      "x": -5.2,
+      "area": 2.5,
+      "liftSlope": 4,
+      "stallAngleDeg": 18,
+      "incidenceDeg": 2.5
+    }
   ],
-  "pitch": { "authority": 2.0, "damping": 5.0, "inertiaBase": 300 },
+  "pitch": {
+    "authority": 2.0,
+    "damping": 5.0,
+    "inertiaBase": 300
+  },
   "refChord": 2,
-  "gear": { "tolerance": 7, "vhMax": 40, "height": 1.6, "x": 0.6 },
-  "geometry": { "noseX": 4.0, "tailX": -5.8, "topY": 1.1 }
+  "gear": {
+    "tolerance": 7,
+    "vhMax": 40,
+    "height": 1.6,
+    "x": 0.6
+  },
+  "geometry": {
+    "noseX": 4.0,
+    "tailX": -5.8,
+    "topY": 1.1
+  },
+  "description": "Le bon vieux biplace de Pip. Équilibré, facile, sans surprise.",
+  "look": {
+    "body": "0xf3e3c3",
+    "wing": "0xf2c94c",
+    "accent": "0xd9573b",
+    "wingScale": 1,
+    "engineScale": 1
+  }
 }

@@ -1,0 +1,102 @@
+{
+  "id": "fusee",
+  "name": "La Fusée",
+  "description": "Gros moteur, petites ailes. Monte comme une flèche, mais atterrit vite et boit beaucoup.",
+  "masses": [
+    {
+      "id": "engine",
+      "mass": 120,
+      "x": 2.8
+    },
+    {
+      "id": "propeller",
+      "mass": 12,
+      "x": 3.6
+    },
+    {
+      "id": "fuselage",
+      "mass": 80,
+      "x": -2.6
+    },
+    {
+      "id": "wing",
+      "mass": 25,
+      "x": 1.8
+    },
+    {
+      "id": "tail",
+      "mass": 12,
+      "x": -5.0
+    },
+    {
+      "id": "gear",
+      "mass": 20,
+      "x": 0.6
+    },
+    {
+      "id": "pilot",
+      "mass": 15,
+      "x": 0.0
+    },
+    {
+      "id": "tank",
+      "mass": 5,
+      "x": 0.0
+    }
+  ],
+  "fuel": {
+    "capacity": 34,
+    "x": 0.0,
+    "burnRate": 0.85
+  },
+  "engine": {
+    "thrustMax": 2600,
+    "propVmax": 120
+  },
+  "drag": {
+    "parasite": 0.2,
+    "inducedK": 0.15
+  },
+  "surfaces": [
+    {
+      "id": "wing",
+      "x": 1.8,
+      "area": 6.5,
+      "liftSlope": 5,
+      "stallAngleDeg": 14,
+      "incidenceDeg": 3
+    },
+    {
+      "id": "stabilizer",
+      "x": -5.0,
+      "area": 2.0,
+      "liftSlope": 4,
+      "stallAngleDeg": 18,
+      "incidenceDeg": 2.5
+    }
+  ],
+  "pitch": {
+    "authority": 3.0,
+    "damping": 5.0,
+    "inertiaBase": 300
+  },
+  "refChord": 1.6,
+  "gear": {
+    "tolerance": 5.5,
+    "vhMax": 44,
+    "height": 1.6,
+    "x": 0.6
+  },
+  "geometry": {
+    "noseX": 4.2,
+    "tailX": -5.6,
+    "topY": 1.1
+  },
+  "look": {
+    "body": "0xd9573b",
+    "wing": "0xf3e3c3",
+    "accent": "0x2b2321",
+    "wingScale": 0.75,
+    "engineScale": 1.35
+  }
+}

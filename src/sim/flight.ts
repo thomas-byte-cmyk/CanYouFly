@@ -135,7 +135,7 @@ export function stepPhysics(
     const aeroOnly = mz - mzAssist - (pitchCmd + trim) * def.pitch.authority * qEff + def.pitch.damping * s.omega * qEff;
     const natural = clamp((aeroOnly / (def.pitch.authority * qEff) + trim) * a.natural, -0.8, 0.8);
     const speedK = clamp(V / 20, 0.35, 1);
-    const target = (pitchCmd + (s.onGround ? 0 : natural)) * a.pitchRateDeg * DEG * speedK;
+    const target = (pitchCmd + (s.onGround ? 0 : natural)) * a.pitchRateDeg * DEG * speedK * (ac.pitchRateScale ?? 1);
     s.omega += (target - s.omega) * Math.min(1, dt / a.response);
     // Grip : la trajectoire suit le nez (moins de « glisse » vers le haut ou le bas).
     if (!s.onGround && moving && !stalled) {
